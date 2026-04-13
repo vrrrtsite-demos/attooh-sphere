@@ -600,6 +600,7 @@ function buildSphereStrand(strandData, isA) {
       cDiv2.textContent = child.label;
       cDiv2.addEventListener('click', e => {
         e.stopPropagation();
+        if (window.SphereAnalytics) window.SphereAnalytics.track('article_clicked', { article_id: child.id, article_label: child.label, hub_id: hub.id });
         if (child.url) window.open(child.url, '_blank');
         else {
           const r = cDiv2.getBoundingClientRect();
@@ -681,6 +682,11 @@ function selectHub(hubId) {
   selectedHubId = hubId;
   autoRotate = false;
 
+  if (window.SphereAnalytics) {
+    const hubData = [...strandA, ...strandB].find(h => h.id === hubId);
+    window.SphereAnalytics.track('hub_clicked', { hub_id: hubId, hub_label: hubData?.label || hubId });
+  }
+
   if (hubGroups[hubId]) {
     const { phi, lat } = hubGroups[hubId];
     const rawY = Math.PI / 2 - phi;
@@ -705,6 +711,7 @@ navBar.addEventListener('click', e => {
   const pill = e.target.closest('.nav-pill, .nav-cta');
   if (!pill) return;
   if (pill.classList.contains('nav-cta')) {
+    if (window.SphereAnalytics) window.SphereAnalytics.track('cta_clicked', { cta: 'coffee-date' });
     window.open('https://coffeedate.attooh.co.za/', '_blank');
     return;
   }
@@ -760,7 +767,10 @@ const mtPhoto = document.getElementById('mt-photo');
 document.getElementById('mt-close').addEventListener('click', () => miniTip.classList.remove('visible'));
 document.getElementById('mt-action').addEventListener('click', () => {
   const url = miniTip.dataset.url;
-  if (url) window.open(url, '_blank');
+  if (url) {
+    if (window.SphereAnalytics) window.SphereAnalytics.track('article_clicked', { article_label: mtLabel.textContent, url });
+    window.open(url, '_blank');
+  }
 });
 
 function showMiniTip(data, clientX, clientY) {
@@ -799,8 +809,10 @@ function handleClick(clientX, clientY) {
     selectHub(data.id);
     return;
   }
-  if (data.url) window.open(data.url, '_blank');
-  else showMiniTip(data, clientX, clientY);
+  if (data.url) {
+    if (window.SphereAnalytics) window.SphereAnalytics.track('article_clicked', { article_id: data.id, article_label: data.label, hub_id: hit.userData.hubId });
+    window.open(data.url, '_blank');
+  } else showMiniTip(data, clientX, clientY);
 }
 
 // Mouse
