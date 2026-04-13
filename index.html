@@ -71,19 +71,6 @@
   .nav-pill.path[data-path="starter"].active  { background: #7aaa10; color: #1a3000; }
   .nav-pill.path[data-path="discover"].active { background: #1a3000; }
 
-  @keyframes pillPop {
-    0%   { transform: scale(1); }
-    40%  { transform: scale(1.18); }
-    100% { transform: scale(1.11); }
-  }
-  .nav-pill.path.pill-spotlight:not(.active) {
-    animation: pillPop 0.38s ease forwards;
-    position: relative; z-index: 5;
-    background: #edf8c0; color: #1a3000;
-    border-color: rgba(156,211,30,0.85);
-    box-shadow: 0 0 0 3px rgba(156,211,30,0.45), 0 4px 20px rgba(0,0,0,0.12);
-  }
-
   .nav-pill.a { background: rgba(156,211,30,0.10); color: #3a6000; border-color: rgba(156,211,30,0.45); }
   .nav-pill.a.active { background: #9cd31e; color: #1a3000; border-color: #9cd31e; box-shadow: 0 2px 10px rgba(156,211,30,0.40); }
   .nav-pill.a:hover:not(.active) { background: rgba(156,211,30,0.20); }
@@ -160,16 +147,57 @@
   .ctrl-dot-b { width: 10px; height: 10px; border-radius: 50%; background: #3a6000; display: inline-block; flex-shrink: 0; margin-left: -4px; }
 
   @media (max-width: 600px) {
+    #hemi-labels { display: none; }
     #controls { gap: 3px; bottom: 14px; }
     .ctrl { font-size: 9px; padding: 4px 7px; gap: 3px; }
     .ctrl-long { display: none; }
     #logo-pin { padding: 0 8px; }
     #logo-pin .logo-text { font-size: 18px; }
-    #logo-pin .logo-subtitle { display: none; }
-    #change-path { font-size: 0; padding: 0 10px; min-width: 32px; }
-    #change-path::after { content: "←"; font-size: 13px; color: #9cd31e; font-weight: 800; font-family: 'Nunito', sans-serif; }
     .node-label.child-a, .node-label.child-b { display: none; }
+    #content-panel { width: 100%; top: 52px; bottom: 44px; }
   }
+
+  /* ── Nav pill spotlight carousel ── */
+  .nav-pill.path.spotlight {
+    background: rgba(248,158,52,0.14) !important;
+    border-color: rgba(248,158,52,0.65) !important;
+    color: #7A4A00 !important;
+    box-shadow: 0 0 0 2.5px rgba(248,158,52,0.45), 0 4px 16px rgba(248,158,52,0.25) !important;
+    transform: scale(1.07);
+  }
+
+  #path-guide {
+    display: none;
+    position: fixed; bottom: 54px; left: 20px; z-index: 300;
+    background: rgba(20,40,10,0.94); border-radius: 18px;
+    padding: 14px 20px; min-width: 280px; max-width: 360px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.40);
+    border: 1.5px solid rgba(156,211,30,0.20);
+    text-align: center;
+  }
+  #path-guide.visible { display: block; animation: tipIn 0.3s ease; }
+  #pg-exit { position: absolute; top: 10px; right: 14px; font-size: 10px; color: rgba(255,255,255,0.35); cursor: pointer; font-weight: 700; }
+  #pg-exit:hover { color: rgba(255,255,255,0.7); }
+  #pg-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--path-color, #9cd31e); margin-bottom: 6px; font-family: 'Nunito', sans-serif; }
+  #pg-step  { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 10px; font-family: 'Nunito', sans-serif; line-height: 1.3; }
+  #pg-dots  { display: flex; gap: 6px; justify-content: center; margin-bottom: 12px; }
+  .pg-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.20); transition: all 0.2s; }
+  .pg-dot.done   { background: var(--path-color, #9cd31e); opacity: 0.6; }
+  .pg-dot.active { background: var(--path-color, #9cd31e); transform: scale(1.35); }
+  #pg-nav { display: flex; gap: 10px; justify-content: center; }
+  #pg-nav button { font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 800; padding: 7px 18px; border-radius: 20px; border: none; cursor: pointer; transition: all 0.15s; }
+  #pg-back { background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.6); }
+  #pg-back:hover { background: rgba(255,255,255,0.18); color: #fff; }
+  #pg-next { background: var(--path-color, #9cd31e); color: #1a3000; box-shadow: 0 2px 10px rgba(0,0,0,0.25); }
+  #pg-next:hover { opacity: 0.88; }
+
+  #hemi-labels {
+    position: fixed; left: 18px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 8px; z-index: 100; pointer-events: none;
+  }
+  .hemi-tag { font-family: 'Nunito', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
+  .hemi-tag.a { background: rgba(156,211,30,0.12); color: #3a6000; border: 1px solid rgba(156,211,30,0.35); }
+  .hemi-tag.b { background: rgba(58,96,0,0.10); color: #3a6000; border: 1px solid rgba(58,96,0,0.25); }
 
   #content-panel {
     position: fixed; top: 52px; right: 0; bottom: 44px;
@@ -211,11 +239,12 @@
   #cpb-next:hover { opacity: 0.88; }
   #cpb-cta { background: #9cd31e; color: #1a3000; font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800; padding: 5px 13px; border-radius: 20px; border: none; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all 0.15s; }
   #cpb-cta:hover { background: #7aaa10; }
-  #cpb-close { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; padding: 4px 9px; border-radius: 50%; border: none; cursor: pointer; background: #f0f0f0; color: #999; flex-shrink: 0; transition: all 0.15s; line-height: 1; }
-  #cpb-close:hover { background: #e0e0e0; color: #444; }
+  #cpb-close { background: none; border: none; cursor: pointer; font-size: 18px; color: #aaa; line-height: 1; padding: 4px 6px; flex-shrink: 0; transition: color 0.15s; }
+  #cpb-close:hover { color: #555; }
 
   body.path-active.panel-open #cp-path-bar { display: flex; }
   body.path-active.panel-open #cp-inner { top: 46px; }
+  body.panel-open #path-guide { display: none !important; }
 
   #cp-inner {
     position: absolute; top: 0; left: 0; right: 0; bottom: 40px;
@@ -275,11 +304,18 @@
   @media (max-width: 860px) {
     #content-panel { width: 100%; top: 52px; bottom: 44px; }
     #cp-admin-bar { position: sticky; bottom: 0; }
-    #cpb-label { display: none; }
-    #cpb-cta   { display: none; }
-    #cpb-back  { padding: 5px 10px; font-size: 10px; }
-    #cpb-step  { font-size: 11px; }
-    #cp-path-bar { gap: 6px; padding: 0 8px; }
+    #path-guide {
+      left: 0; right: 0; bottom: 44px; border-radius: 0;
+      max-width: 100%; min-width: 100%; box-sizing: border-box; padding: 8px 14px;
+    }
+    #path-guide.visible { display: flex; flex-direction: row; align-items: center; gap: 8px; }
+    #pg-label { display: none; }
+    #pg-dots  { display: none; }
+    #pg-step  { font-size: 12px; margin: 0; flex: 1; line-height: 1.3; }
+    #pg-exit  { position: static; font-size: 10px; flex-shrink: 0; order: -1; }
+    #pg-nav   { flex-direction: row; gap: 6px; margin: 0; flex-shrink: 0; }
+    #pg-nav button { padding: 5px 14px; font-size: 11px; }
+    body.path-active:not(.panel-open) #content-panel { bottom: 96px; }
   }
 </style>
 </head>
@@ -289,11 +325,16 @@
   <div id="logo-pin">
     <a href="https://attooh.co.za" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
       <span class="logo-text" style="font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;color:#9cd31e;letter-spacing:-0.5px;">attooh!</span>
-      <span class="logo-subtitle" style="font-size:9px;font-weight:700;color:#aaa;font-family:'Nunito',sans-serif;letter-spacing:0.5px;text-transform:uppercase;">Financial Services</span>
+      <span style="font-size:9px;font-weight:700;color:#aaa;font-family:'Nunito',sans-serif;letter-spacing:0.5px;text-transform:uppercase;">Financial Services</span>
     </a>
   </div>
   <div id="nav-wrap"><div id="nav-bar"></div></div>
   <div id="change-path" title="Choose a different guide">← My Guide</div>
+</div>
+
+<div id="hemi-labels">
+  <div class="hemi-tag a">▲ Our Services</div>
+  <div class="hemi-tag b">▼ Our Story</div>
 </div>
 
 <div id="canvas-container"></div>
@@ -310,6 +351,7 @@
 <div id="content-panel">
   <div id="cp-resize-handle"></div>
   <div id="cp-path-bar">
+    <button id="cpb-close" title="Exit guide">✕</button>
     <button id="cpb-back">← Back</button>
     <div id="cpb-info">
       <span id="cpb-label"></span>
@@ -317,7 +359,6 @@
     </div>
     <button id="cpb-cta">☕ Book</button>
     <button id="cpb-next">Next →</button>
-    <button id="cpb-close">✕</button>
   </div>
   <div id="cp-inner">
     <div id="cp-step-badge"></div>
@@ -337,9 +378,21 @@
 <div id="bottom-bar"><div id="bottom-scroll"></div></div>
 
 <div id="controls">
+  <div class="ctrl"><span class="ctrl-icon">🫧</span> <span class="ctrl-long">Select a path from the top bar</span></div>
   <div class="ctrl"><span class="ctrl-icon">👆</span> <span class="ctrl-long">Drag to spin</span></div>
   <div class="ctrl"><span class="ctrl-icon">🔍</span> <span class="ctrl-long">Scroll to zoom</span></div>
   <div class="ctrl"><span class="ctrl-dot-a"></span><span class="ctrl-dot-b"></span> <span class="ctrl-long">Tap any node to read</span></div>
+</div>
+
+<div id="path-guide">
+  <div id="pg-exit">✕ Exit guide</div>
+  <div id="pg-label"></div>
+  <div id="pg-step"></div>
+  <div id="pg-dots"></div>
+  <div id="pg-nav">
+    <button id="pg-back">← Back</button>
+    <button id="pg-next">Next →</button>
+  </div>
 </div>
 
 <script type="importmap">
@@ -888,6 +941,18 @@ function updatePathGuide() {
   const hubData = hubById[p.hubs[pathStep]];
   const stepText = `Step ${pathStep + 1} of ${p.hubs.length}: ${hubData ? hubData.label : p.hubs[pathStep]}`;
 
+  document.getElementById("path-guide").style.setProperty("--path-color", p.color);
+  document.getElementById("pg-label").textContent = p.label;
+  document.getElementById("pg-step").textContent = stepText;
+  const dots = document.getElementById("pg-dots"); dots.innerHTML = "";
+  p.hubs.forEach((_, i) => {
+    const d = document.createElement("div");
+    d.className = "pg-dot" + (i < pathStep ? " done" : i === pathStep ? " active" : "");
+    dots.appendChild(d);
+  });
+  document.getElementById("pg-back").style.display = pathStep === 0 ? "none" : "";
+  document.getElementById("pg-next").textContent = isLast ? "Finish ✓" : "Next →";
+
   document.getElementById("cp-path-bar").style.setProperty("--pb-color", p.color);
   document.getElementById("cp-path-bar").style.setProperty("--pb-text", p.textColor || "#fff");
   document.getElementById("cpb-label").textContent = p.label;
@@ -911,9 +976,10 @@ function applyPathStep() {
 function activatePath(pathKey) {
   activePath = pathKey; pathStep = 0;
   if (window.SphereAnalytics) window.SphereAnalytics.track('path_started', { path: pathKey, path_label: PATHS[pathKey]?.label || pathKey });
-  stopNavCarousel();
+  stopPillSpotlight();
   const p = PATHS[pathKey];
   drawPathLines(p.hubs, p.color);
+  document.getElementById("path-guide").classList.add("visible");
   document.getElementById("controls").style.display = "none";
   document.body.classList.add("path-active");
   applyPathStep();
@@ -925,12 +991,20 @@ function exitPath() {
   activePath = null; pathStep = 0;
   selectedHubIds.clear(); hideContentPanel(); clearPathLines();
   targetRotX = null; targetRotY = null; autoRotate = true;
+  document.getElementById("path-guide").classList.remove("visible");
   document.getElementById("controls").style.display = "";
   document.body.classList.remove("path-active");
   setActivePathPill(null); setActiveNav("all");
-  startNavCarousel();
+  pillSpotIndex = 0; startPillSpotlight();
 }
 
+document.getElementById("pg-exit").addEventListener("click", exitPath);
+document.getElementById("cpb-close").addEventListener("click", exitPath);
+document.getElementById("pg-back").addEventListener("click", () => { if (pathStep > 0) { pathStep--; applyPathStep(); } });
+document.getElementById("pg-next").addEventListener("click", () => {
+  if (!activePath) return;
+  if (pathStep < PATHS[activePath].hubs.length - 1) { pathStep++; applyPathStep(); } else exitPath();
+});
 document.getElementById("cpb-back").addEventListener("click", () => { if (pathStep > 0) { pathStep--; applyPathStep(); } });
 document.getElementById("cpb-next").addEventListener("click", () => {
   if (!activePath) return;
@@ -940,14 +1014,13 @@ document.getElementById("cpb-cta").addEventListener("click", () => {
   if (window.SphereAnalytics) window.SphereAnalytics.track('cta_clicked', { cta: 'coffee-date', context: 'path-bar', path: activePath });
   window.open(CTA, "_blank");
 });
-document.getElementById("cpb-close").addEventListener("click", exitPath);
 
 function selectHub(hubId) {
   if (activePath) return;
-  stopNavCarousel();
+  stopPillSpotlight();
   if (hubId === "all" || (selectedHubIds.size === 1 && selectedHubIds.has(hubId))) {
     selectedHubIds.clear(); targetRotX = null; targetRotY = null;
-    autoRotate = true; setActiveNav("all"); hideContentPanel(); startNavCarousel(); return;
+    autoRotate = true; setActiveNav("all"); hideContentPanel(); return;
   }
   selectedHubIds = new Set([hubId]); autoRotate = false;
   if (window.SphereAnalytics) {
@@ -978,59 +1051,28 @@ window.addEventListener("mousemove", e => {
 window.addEventListener("mouseup", () => { if (isResizing) { isResizing = false; resizeHandle.classList.remove("dragging"); } });
 document.getElementById("change-path").addEventListener("click", () => { exitPath(); });
 
-// ── NAV CAROUSEL ─────────────────────────────────────────────────────────────
+// ── NAV PILL SPOTLIGHT CAROUSEL ───────────────────────────────────────────────
 
-let navCarouselTimer = null;
-let navCarouselIndex = 0;
-let navCarouselPaused = false;
-let navCarouselResumeTimer = null;
-const NAV_CAROUSEL_INTERVAL = 1800;
-
-function getPathPills() { return Array.from(navBar.querySelectorAll(".nav-pill.path")); }
-
-function spotlightPill(idx) {
-  const pills = getPathPills();
-  if (!pills.length) return;
-  pills.forEach(p => { p.classList.remove("pill-spotlight"); void p.offsetWidth; }); // reflow to re-trigger animation
-  const pill = pills[idx % pills.length];
-  pill.classList.add("pill-spotlight");
-  const scrollTarget = pill.offsetLeft - (navBar.clientWidth / 2) + (pill.offsetWidth / 2);
-  navBar.scrollTo({ left: Math.max(0, scrollTarget), behavior: "smooth" });
+let pillSpotTimer = null, pillSpotIndex = 0;
+function startPillSpotlight() {
+  const pills = Array.from(document.querySelectorAll(".nav-pill.path"));
+  if (!pills.length || activePath) return;
+  pills.forEach(p => p.classList.remove("spotlight"));
+  pills[pillSpotIndex % pills.length].classList.add("spotlight");
+  pills[pillSpotIndex % pills.length].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  pillSpotTimer = setInterval(() => {
+    if (activePath) return;
+    pills.forEach(p => p.classList.remove("spotlight"));
+    pillSpotIndex = (pillSpotIndex + 1) % pills.length;
+    pills[pillSpotIndex].classList.add("spotlight");
+    pills[pillSpotIndex].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }, 3500);
 }
-
-function startNavCarousel() {
-  if (activePath) return;
-  stopNavCarousel();
-  navCarouselPaused = false;
-  spotlightPill(navCarouselIndex);
-  navCarouselTimer = setInterval(() => {
-    if (navCarouselPaused || activePath) return;
-    navCarouselIndex = (navCarouselIndex + 1) % getPathPills().length;
-    spotlightPill(navCarouselIndex);
-  }, NAV_CAROUSEL_INTERVAL);
+function stopPillSpotlight() {
+  clearInterval(pillSpotTimer); pillSpotTimer = null;
+  document.querySelectorAll(".nav-pill.path").forEach(p => p.classList.remove("spotlight"));
 }
-
-function stopNavCarousel() {
-  clearInterval(navCarouselTimer);
-  navCarouselTimer = null;
-  clearTimeout(navCarouselResumeTimer);
-  getPathPills().forEach(p => p.classList.remove("pill-spotlight"));
-}
-
-function pauseNavCarousel() {
-  if (!navCarouselTimer) return;
-  navCarouselPaused = true;
-  clearTimeout(navCarouselResumeTimer);
-  getPathPills().forEach(p => p.classList.remove("pill-spotlight"));
-  navCarouselResumeTimer = setTimeout(() => {
-    if (!activePath) { navCarouselPaused = false; spotlightPill(navCarouselIndex); }
-  }, 7000);
-}
-
-navBar.addEventListener("mouseenter", pauseNavCarousel);
-navBar.addEventListener("touchstart", () => pauseNavCarousel(), { passive: true });
-
-startNavCarousel();
+startPillSpotlight();
 
 navBar.addEventListener("click", e => {
   if (navDragged) return;
@@ -1048,7 +1090,7 @@ bottomScroll.addEventListener("wheel", e => { e.preventDefault(); bottomScroll.s
 bottomScroll.addEventListener("click", e => {
   if (bottomDragged) return;
   const pill = e.target.closest(".nav-pill");
-  if (!pill) return; selectHub(pill.dataset.id);
+  if (!pill) return; stopPillSpotlight(); selectHub(pill.dataset.id);
 });
 
 let navDragging = false, navDragged = false, navStartX = 0, navScrollStart = 0;
@@ -1267,6 +1309,7 @@ let currentHubId = null;
 function renderContentPanel(hubId) {
   const data = ATTOOH_CONTENT[hubId];
   if (!data) { contentPanel.classList.remove("visible"); return; }
+  stopPillSpotlight();
   document.body.classList.add("panel-open");
   currentHubId = hubId;
 
