@@ -322,6 +322,15 @@
     #pg-nav button { padding: 5px 14px; font-size: 11px; }
     body.path-active:not(.panel-open) #content-panel { bottom: 96px; }
   }
+
+/* ── HEATMAP ──────────────────────────────────────────────────────── */
+body.heatmap-mode .node-label.hub-a,
+body.heatmap-mode .node-label.hub-b { transition: background 0.8s ease, border-color 0.8s ease; }
+.heatmap-hot   { background: rgba(231,76,60,0.92)  !important; border-color: #c0392b !important; color: #fff !important; }
+.heatmap-warm  { background: rgba(230,126,34,0.88) !important; border-color: #e67e22 !important; color: #fff !important; }
+.heatmap-mild  { background: rgba(241,196,15,0.85) !important; border-color: #f39c12 !important; color: #333 !important; }
+.heatmap-cool  { background: rgba(52,152,219,0.80) !important; border-color: #2980b9 !important; color: #fff !important; }
+.heatmap-cold  { background: rgba(200,200,200,0.50) !important; border-color: #ccc     !important; color: #666 !important; }
 </style>
 </head>
 <body>
@@ -374,6 +383,7 @@
   </div>
   <div id="cp-admin-bar">
     <span id="cp-admin-label">Admin mode</span>
+    <button id="cp-heatmap-btn" style="display:none;font-family:sans-serif;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;">🔥 Heatmap</button>
     <label class="cp-toggle-wrap">
       <input type="checkbox" id="cp-admin-toggle">
       <span class="cp-toggle-slider"></span>
@@ -399,6 +409,15 @@
     <button id="pg-back">← Back</button>
     <button id="pg-next">Next →</button>
   </div>
+</div>
+
+<!-- Email capture card — shown 2s after path completion -->
+<div id="email-capture" style="display:none;position:fixed;bottom:54px;left:50%;transform:translateX(-50%);z-index:500;background:#1a1a2e;border-radius:18px;padding:20px 24px;width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.40);border:1.5px solid rgba(58,96,0,0.20);text-align:center;">
+  <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:6px;">Want a personalised guide?</div>
+  <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:14px;">Based on what you just explored — free, no spam.</div>
+  <input id="email-input" type="email" placeholder="your@email.com" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid #444;background:#fff;font-size:12px;margin-bottom:8px;box-sizing:border-box;">
+  <button id="email-submit" style="width:100%;padding:8px;border-radius:20px;background:#3a6000;color:#fff;border:none;font-weight:700;font-size:12px;cursor:pointer;">Send me the guide →</button>
+  <div id="email-dismiss" style="margin-top:8px;font-size:10px;color:rgba(255,255,255,0.35);cursor:pointer;">No thanks</div>
 </div>
 
 <script type="importmap">
@@ -968,6 +987,7 @@ function applyPathStep() {
   rotateTo(currentHub, 0.70);
   updatePathGuide();
   renderContentPanel(currentHub);
+  window.SphereAnalytics?.track("path_step_reached", { path_key: activePath, step: pathStep, hub_id: currentHub });
 }
 
 function activatePath(pathKey) {
@@ -981,9 +1001,12 @@ function activatePath(pathKey) {
   applyPathStep();
   setActivePathPill(pathKey);
   allPill.classList.remove("active");
+  window.SphereAnalytics?.track("path_started", { path_key: pathKey, path_label: p.label });
 }
 
 function exitPath() {
+  const completedPath = activePath;
+  const completedStep = pathStep;
   activePath = null; pathStep = 0;
   selectedHubIds.clear(); hideContentPanel(); clearPathLines();
   targetRotX = null; targetRotY = null; autoRotate = true;
@@ -991,6 +1014,10 @@ function exitPath() {
   document.getElementById("controls").style.display = "";
   document.body.classList.remove("path-active");
   setActivePathPill(null); setActiveNav("all");
+  window.SphereAnalytics?.track("path_exited", { path_key: completedPath, steps_completed: completedStep });
+  if (completedPath && PATHS[completedPath] && completedStep === PATHS[completedPath].hubs.length - 1) {
+    showEmailCapture();
+  }
 }
 
 document.getElementById("pg-exit").addEventListener("click", exitPath);
@@ -1014,6 +1041,7 @@ function selectHub(hubId) {
   }
   selectedHubIds = new Set([hubId]); autoRotate = false;
   rotateTo(hubId); setActiveNav(hubId); renderContentPanel(hubId);
+  window.SphereAnalytics?.track("hub_clicked", { hub_id: hubId, hub_label: hubById[hubId]?.label || hubId });
 }
 
 function setActiveNav(hubId) {
@@ -1298,7 +1326,13 @@ function renderContentPanel(hubId) {
       <div class="cp-card-body">${item.body}</div>
       ${articlesHtml}`;
     card.querySelectorAll(".cp-article-item").forEach(li => {
-      li.addEventListener("click", () => { const url = li.dataset.url; if (url) window.open(url, "_blank"); });
+      li.addEventListener("click", () => {
+        const url = li.dataset.url;
+        if (url) {
+          window.SphereAnalytics?.track("article_clicked", { hub_id: hubId, article_url: url });
+          window.open(url, "_blank");
+        }
+      });
     });
     itemsEl.appendChild(card);
   });
@@ -1311,6 +1345,7 @@ function renderContentPanel(hubId) {
   ctaCard.appendChild(ctaBtn); itemsEl.appendChild(ctaCard);
 
   contentPanel.classList.add("visible");
+  window.SphereAnalytics?.track("panel_opened", { hub_id: hubId });
 }
 
 function hideContentPanel() {
@@ -1320,9 +1355,90 @@ function hideContentPanel() {
 
 document.getElementById("cp-admin-toggle").addEventListener("change", e => {
   document.body.classList.toggle("admin-mode", e.target.checked);
+  document.getElementById("cp-heatmap-btn").style.display = e.target.checked ? "block" : "none";
+  if (!e.target.checked) clearHeatmap();
   if (currentHubId) renderContentPanel(currentHubId);
 });
 
+// ── HEATMAP ──────────────────────────────────────────────────────────────────
+async function loadAndApplyHeatmap() {
+  const script = document.querySelector("script[data-sphere-id]");
+  const SPHERE_ID = script?.dataset?.sphereId || "attooh-sphere";
+  const API = script?.dataset?.apiUrl || "https://vrrrt-api-production.up.railway.app/analytics";
+  try {
+    const res = await fetch(`${API}/heatmap/${SPHERE_ID}?days=30`);
+    const { heatmap } = await res.json();
+    if (!heatmap || Object.keys(heatmap).length === 0) return;
+    const max = Math.max(...Object.values(heatmap));
+    allClickable.forEach(({ mesh }) => {
+      const el = mesh.userData.labelEl;
+      if (!el) return;
+      const hubId = mesh.userData.isHub ? mesh.userData.data.id : mesh.userData.hubId;
+      const count = heatmap[hubId] || 0;
+      const ratio = max > 0 ? count / max : 0;
+      el.classList.remove("heatmap-hot","heatmap-warm","heatmap-mild","heatmap-cool","heatmap-cold");
+      if (ratio > 0.75)      el.classList.add("heatmap-hot");
+      else if (ratio > 0.50) el.classList.add("heatmap-warm");
+      else if (ratio > 0.25) el.classList.add("heatmap-mild");
+      else if (ratio > 0.05) el.classList.add("heatmap-cool");
+      else                   el.classList.add("heatmap-cold");
+    });
+    document.body.classList.add("heatmap-mode");
+  } catch (err) {
+    console.warn("Heatmap load failed:", err);
+  }
+}
+
+function clearHeatmap() {
+  document.body.classList.remove("heatmap-mode");
+  allClickable.forEach(({ mesh }) => {
+    const el = mesh.userData.labelEl;
+    if (!el) return;
+    el.classList.remove("heatmap-hot","heatmap-warm","heatmap-mild","heatmap-cool","heatmap-cold");
+  });
+}
+
+let heatmapActive = false;
+document.getElementById("cp-heatmap-btn").addEventListener("click", () => {
+  heatmapActive = !heatmapActive;
+  if (heatmapActive) {
+    loadAndApplyHeatmap();
+    document.getElementById("cp-heatmap-btn").textContent = "❄️ Clear heatmap";
+  } else {
+    clearHeatmap();
+    document.getElementById("cp-heatmap-btn").textContent = "🔥 Heatmap";
+  }
+});
+
+// ── EMAIL CAPTURE ─────────────────────────────────────────────────────────────
+function showEmailCapture() {
+  const el = document.getElementById("email-capture");
+  if (!el) return;
+  setTimeout(() => { el.style.display = "block"; }, 2000);
+}
+
+document.getElementById("email-submit").addEventListener("click", async () => {
+  const email = document.getElementById("email-input").value.trim();
+  if (!email || !email.includes("@")) return;
+  await window.SphereAnalytics?.identify(email);
+  window.SphereAnalytics?.track("email_captured");
+  const el = document.getElementById("email-capture");
+  if (el) {
+    el.innerHTML = "<div style=\"color:#7CC68D;font-weight:800;font-size:13px;padding:10px;\">You'll hear from us soon!</div>";
+    setTimeout(() => { el.style.display = "none"; }, 2500);
+  }
+});
+
+document.getElementById("email-dismiss").addEventListener("click", () => {
+  const el = document.getElementById("email-capture");
+  if (el) el.style.display = "none";
+  window.SphereAnalytics?.track("email_capture_dismissed");
+});
+
 </script>
+<script src="analytics.js"
+  data-sphere-id="attooh-sphere"
+  data-api-url="https://vrrrt-api-production.up.railway.app/analytics"
+  defer></script>
 </body>
 </html>
