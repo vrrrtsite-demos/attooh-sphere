@@ -71,6 +71,19 @@
   .nav-pill.path[data-path="starter"].active  { background: #7aaa10; color: #1a3000; }
   .nav-pill.path[data-path="discover"].active { background: #1a3000; }
 
+  @keyframes pillPop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.18); }
+    100% { transform: scale(1.11); }
+  }
+  .nav-pill.path.pill-spotlight:not(.active) {
+    animation: pillPop 0.38s ease forwards;
+    position: relative; z-index: 5;
+    background: #edf8c0; color: #1a3000;
+    border-color: rgba(156,211,30,0.85);
+    box-shadow: 0 0 0 3px rgba(156,211,30,0.45), 0 4px 20px rgba(0,0,0,0.12);
+  }
+
   .nav-pill.a { background: rgba(156,211,30,0.10); color: #3a6000; border-color: rgba(156,211,30,0.45); }
   .nav-pill.a.active { background: #9cd31e; color: #1a3000; border-color: #9cd31e; box-shadow: 0 2px 10px rgba(156,211,30,0.40); }
   .nav-pill.a:hover:not(.active) { background: rgba(156,211,30,0.20); }
@@ -996,7 +1009,7 @@ function applyPathStep() {
 function activatePath(pathKey) {
   activePath = pathKey; pathStep = 0;
   if (window.SphereAnalytics) window.SphereAnalytics.track('path_started', { path: pathKey, path_label: PATHS[pathKey]?.label || pathKey });
-  fadeBubblesAway();
+  stopNavCarousel(); fadeBubblesAway();
   const p = PATHS[pathKey];
   drawPathLines(p.hubs, p.color);
   document.getElementById("path-guide").classList.add("visible");
@@ -1015,6 +1028,7 @@ function exitPath() {
   document.getElementById("controls").style.display = "";
   document.body.classList.remove("path-active");
   setActivePathPill(null); setActiveNav("all");
+  startNavCarousel();
 }
 
 document.getElementById("pg-exit").addEventListener("click", exitPath);
@@ -1035,10 +1049,10 @@ document.getElementById("cpb-cta").addEventListener("click", () => {
 
 function selectHub(hubId) {
   if (activePath) return;
-  fadeBubblesAway();
+  fadeBubblesAway(); stopNavCarousel();
   if (hubId === "all" || (selectedHubIds.size === 1 && selectedHubIds.has(hubId))) {
     selectedHubIds.clear(); targetRotX = null; targetRotY = null;
-    autoRotate = true; setActiveNav("all"); hideContentPanel(); return;
+    autoRotate = true; setActiveNav("all"); hideContentPanel(); startNavCarousel(); return;
   }
   selectedHubIds = new Set([hubId]); autoRotate = false;
   if (window.SphereAnalytics) {
@@ -1067,7 +1081,7 @@ window.addEventListener("mousemove", e => {
   contentPanel.style.width = Math.min(Math.max(window.innerWidth - e.clientX, 280), window.innerWidth * 0.85) + "px";
 });
 window.addEventListener("mouseup", () => { if (isResizing) { isResizing = false; resizeHandle.classList.remove("dragging"); } });
-document.getElementById("change-path").addEventListener("click", () => { exitPath(); showBubbles(); });
+document.getElementById("change-path").addEventListener("click", () => { exitPath(); });
 
 // ── FLOATING BUBBLES ──────────────────────────────────────────────────────────
 
@@ -1116,7 +1130,60 @@ function hideBubbles(chosenPath) {
 document.querySelectorAll(".float-bubble").forEach(bubble => {
   bubble.addEventListener("click", () => { hideBubbles(bubble.dataset.path); });
 });
-startBubbleCycle();
+
+// ── NAV CAROUSEL ─────────────────────────────────────────────────────────────
+
+let navCarouselTimer = null;
+let navCarouselIndex = 0;
+let navCarouselPaused = false;
+let navCarouselResumeTimer = null;
+const NAV_CAROUSEL_INTERVAL = 2600;
+
+function getPathPills() { return Array.from(navBar.querySelectorAll(".nav-pill.path")); }
+
+function spotlightPill(idx) {
+  const pills = getPathPills();
+  if (!pills.length) return;
+  pills.forEach(p => { p.classList.remove("pill-spotlight"); void p.offsetWidth; }); // reflow to re-trigger animation
+  const pill = pills[idx % pills.length];
+  pill.classList.add("pill-spotlight");
+  const scrollTarget = pill.offsetLeft - (navBar.clientWidth / 2) + (pill.offsetWidth / 2);
+  navBar.scrollTo({ left: Math.max(0, scrollTarget), behavior: "smooth" });
+}
+
+function startNavCarousel() {
+  if (activePath) return;
+  stopNavCarousel();
+  navCarouselPaused = false;
+  spotlightPill(navCarouselIndex);
+  navCarouselTimer = setInterval(() => {
+    if (navCarouselPaused || activePath) return;
+    navCarouselIndex = (navCarouselIndex + 1) % getPathPills().length;
+    spotlightPill(navCarouselIndex);
+  }, NAV_CAROUSEL_INTERVAL);
+}
+
+function stopNavCarousel() {
+  clearInterval(navCarouselTimer);
+  navCarouselTimer = null;
+  clearTimeout(navCarouselResumeTimer);
+  getPathPills().forEach(p => p.classList.remove("pill-spotlight"));
+}
+
+function pauseNavCarousel() {
+  if (!navCarouselTimer) return;
+  navCarouselPaused = true;
+  clearTimeout(navCarouselResumeTimer);
+  getPathPills().forEach(p => p.classList.remove("pill-spotlight"));
+  navCarouselResumeTimer = setTimeout(() => {
+    if (!activePath) { navCarouselPaused = false; spotlightPill(navCarouselIndex); }
+  }, 7000);
+}
+
+navBar.addEventListener("mouseenter", pauseNavCarousel);
+navBar.addEventListener("touchstart", () => pauseNavCarousel(), { passive: true });
+
+startNavCarousel();
 
 navBar.addEventListener("click", e => {
   if (navDragged) return;
