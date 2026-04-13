@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="author" content="Jakes Schoeman">
-<title>attooh! — Company Knowledge Sphere</title>
+<title>attooh! — Financial Services Knowledge Sphere</title>
 <!--
   Knowledge Graph Technology — Proprietary concept and implementation.
   Developed by Jakes Schoeman. All rights reserved.
@@ -15,23 +15,30 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #fff; font-family: 'Nunito', sans-serif; overflow: hidden; height: 100vh; width: 100vw; }
 
-  /* ── Header — single scrollable row ── */
   #header {
     position: fixed; top: 0; left: 0; right: 0; z-index: 200;
     background: #fff; border-bottom: 1px solid #e8e8e0;
     height: 52px; display: flex; align-items: center;
   }
-  /* Logo — pinned left, never scrolls */
+  #change-path {
+    flex-shrink: 0; padding: 0 14px; height: 100%;
+    display: flex; align-items: center;
+    font-size: 11px; font-weight: 800; color: #9cd31e;
+    cursor: pointer; border-left: 1px solid #eee;
+    white-space: nowrap; font-family: 'Nunito', sans-serif;
+    transition: background 0.15s;
+  }
+  #change-path:hover { background: rgba(156,211,30,0.07); }
+
   #logo-pin {
-    flex-shrink: 0; padding: 0 12px 0 14px;
+    flex-shrink: 0; padding: 0 16px;
     display: flex; align-items: center;
     border-right: 1px solid #eee; height: 100%;
   }
-  /* Nav pills — scroll horizontally */
+
   #nav-wrap {
     flex: 1; min-width: 0; position: relative; height: 100%; overflow: hidden;
   }
-  /* Fade hint on right edge */
   #nav-wrap::after {
     content: ''; pointer-events: none;
     position: absolute; top: 0; right: 0; width: 40px; height: 100%;
@@ -50,89 +57,81 @@
     flex-shrink: 0; cursor: pointer; white-space: nowrap;
     font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 800;
     padding: 4px 12px; border-radius: 20px; border: 1.5px solid transparent;
-    transition: all 0.18s ease; letter-spacing: 0.2px; user-select: none;
+    transition: all 0.18s ease; letter-spacing: 0.1px; user-select: none;
   }
-  /* All pill */
-  .nav-pill.all {
-    background: #f0f0f0; color: #666; border-color: #ddd;
-  }
-  .nav-pill.all.active, .nav-pill.all:hover {
-    background: #333; color: #fff; border-color: #333;
-  }
-  /* Strand A pills — lime green */
-  .nav-pill.a {
-    background: rgba(156,211,30,0.10); color: #3a6000; border-color: rgba(156,211,30,0.45);
-  }
-  .nav-pill.a.active {
-    background: #9cd31e; color: #fff; border-color: #9cd31e;
-    box-shadow: 0 2px 10px rgba(156,211,30,0.40);
-  }
-  .nav-pill.a:hover:not(.active) { background: rgba(156,211,30,0.18); }
-  /* Strand B pills — dark green */
-  .nav-pill.b {
-    background: rgba(58,96,0,0.07); color: #3a6000; border-color: rgba(58,96,0,0.28);
-  }
-  .nav-pill.b.active {
-    background: #3a6000; color: #fff; border-color: #3a6000;
-    box-shadow: 0 2px 10px rgba(58,96,0,0.35);
-  }
+  .nav-pill.all { background: #f0f0f0; color: #666; border-color: #ddd; }
+  .nav-pill.all.active, .nav-pill.all:hover { background: #333; color: #fff; border-color: #333; }
+
+  .nav-pill.path { font-size: 11px; font-weight: 800; padding: 4px 13px; background: #f7f7f7; color: #333; border-color: #ddd; }
+  .nav-pill.path:hover:not(.active) { background: #eee; border-color: #bbb; }
+  .nav-pill.path.active { color: #fff; border-color: transparent; box-shadow: 0 2px 10px rgba(0,0,0,0.20); }
+  .nav-pill.path[data-path="protect"].active  { background: #9cd31e; color: #1a3000; }
+  .nav-pill.path[data-path="grow"].active     { background: #3a6000; }
+  .nav-pill.path[data-path="discover"].active { background: #7aaa10; }
+
+  .nav-pill.a { background: rgba(156,211,30,0.10); color: #3a6000; border-color: rgba(156,211,30,0.45); }
+  .nav-pill.a.active { background: #9cd31e; color: #1a3000; border-color: #9cd31e; box-shadow: 0 2px 10px rgba(156,211,30,0.40); }
+  .nav-pill.a:hover:not(.active) { background: rgba(156,211,30,0.20); }
+
+  .nav-pill.b { background: rgba(58,96,0,0.07); color: #3a6000; border-color: rgba(58,96,0,0.28); }
+  .nav-pill.b.active { background: #3a6000; color: #fff; border-color: #3a6000; box-shadow: 0 2px 10px rgba(58,96,0,0.35); }
   .nav-pill.b:hover:not(.active) { background: rgba(58,96,0,0.13); }
 
-  /* Divider between A and B groups */
-  .nav-divider {
-    flex-shrink: 0; width: 1px; height: 20px;
-    background: #ddd; margin: 0 4px;
-  }
+  .nav-divider { flex-shrink: 0; width: 1px; height: 20px; background: #ddd; margin: 0 4px; }
 
-  /* ── Canvas ── */
+  .nav-cta {
+    flex-shrink: 0; cursor: pointer; white-space: nowrap;
+    font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 800;
+    padding: 5px 14px; border-radius: 20px; letter-spacing: 0.1px; user-select: none;
+    background: #9cd31e; color: #1a3000; border: none; transition: all 0.18s ease;
+  }
+  .nav-cta:hover { background: #7aaa10; }
+
+  #bottom-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 150;
+    background: rgba(255,255,255,0.96); border-top: 1px solid #e8e8e0;
+    height: 44px; display: flex; align-items: center;
+    backdrop-filter: blur(8px);
+  }
+  #bottom-scroll {
+    display: flex; align-items: center; gap: 6px; padding: 0 14px;
+    overflow-x: scroll; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    touch-action: pan-x; height: 100%; width: 100%;
+  }
+  #bottom-scroll::-webkit-scrollbar { display: none; }
+  #canvas-container { bottom: 44px; }
+
   #canvas-container { position: fixed; top: 52px; left: 0; right: 0; bottom: 0; cursor: grab; }
 
-  /* ── Node labels ── */
   .node-label {
-    font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 900;
-    padding: 3px 10px; border-radius: 20px; pointer-events: none;
-    white-space: nowrap; transition: opacity 0.25s; letter-spacing: 0.2px;
+    font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800;
+    padding: 3px 10px; border-radius: 20px;
+    white-space: nowrap; transition: opacity 0.25s; letter-spacing: 0.1px;
     pointer-events: auto; cursor: pointer;
+    will-change: transform;
   }
-  .node-label.hub-a   { color: #2a4800; background: rgba(255,255,255,0.95); border: 1.5px solid rgba(156,211,30,0.75); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-  .node-label.hub-b   { color: #1e3800; background: rgba(255,255,255,0.95); border: 1.5px solid rgba(58,96,0,0.50); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-  .node-label.child-a { font-size: 9px; font-weight: 700; color: #4a7a00; background: rgba(255,255,255,0.88); border: 1px solid rgba(156,211,30,0.40); padding: 1px 7px; }
+  .node-label.hub-a   { color: #2a4e00; background: rgba(255,255,255,0.95); border: 1.5px solid rgba(156,211,30,0.70); box-shadow: 0 2px 6px rgba(0,0,0,0.10); }
+  .node-label.hub-b   { color: #1a3000; background: rgba(255,255,255,0.95); border: 1.5px solid rgba(58,96,0,0.55); box-shadow: 0 2px 6px rgba(0,0,0,0.10); }
+  .node-label.child-a { font-size: 9px; font-weight: 700; color: #3a6000; background: rgba(255,255,255,0.88); border: 1px solid rgba(156,211,30,0.35); padding: 1px 7px; }
   .node-label.child-b { font-size: 9px; font-weight: 700; color: #3a6000; background: rgba(255,255,255,0.88); border: 1px solid rgba(58,96,0,0.28); padding: 1px 7px; }
 
-  /* ── Mini tooltip ── */
   #mini-tip {
     position: fixed; display: none; z-index: 500;
-    background: #141414; border-radius: 14px; padding: 0;
+    background: #1a2e00; border-radius: 14px; padding: 0;
     width: 300px; pointer-events: auto; cursor: default;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(156,211,30,0.35);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.50), 0 0 0 1px rgba(156,211,30,0.35);
     overflow: hidden;
   }
   #mini-tip.visible { display: block; animation: tipIn 0.18s ease; }
   @keyframes tipIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
-  #mt-photo {
-    width: 100%; height: 160px; object-fit: cover; object-position: top center;
-    display: none; border-bottom: 2px solid #9cd31e;
-  }
   #mt-content { padding: 14px 16px; }
-  #mt-label  { font-size: 12px; font-weight: 900; color: #9cd31e; margin-bottom: 5px; }
-  #mt-body   { font-size: 11px; color: rgba(255,255,255,0.78); line-height: 1.6; }
-  #mt-action { font-size: 10px; color: rgba(156,211,30,0.85); margin-top: 8px; font-weight: 800; cursor: pointer; }
+  #mt-label  { font-size: 12px; font-weight: 800; color: #9cd31e; margin-bottom: 5px; font-family: 'Nunito', sans-serif; }
+  #mt-body   { font-size: 11px; color: rgba(255,255,255,0.82); line-height: 1.6; }
+  #mt-action { font-size: 10px; color: #c8f040; margin-top: 8px; font-weight: 800; cursor: pointer; }
   #mt-close  { position: absolute; top: 8px; right: 10px; color: rgba(255,255,255,0.5); font-size: 16px; cursor: pointer; line-height: 1; z-index: 1; }
 
-  /* ── Book a Meeting CTA nav button ── */
-  .nav-cta {
-    flex-shrink: 0; cursor: pointer; white-space: nowrap;
-    font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 800;
-    padding: 4px 14px; border-radius: 20px; letter-spacing: 0.2px; user-select: none;
-    background: #9cd31e; color: #fff; border: 1.5px solid #9cd31e;
-    transition: all 0.18s ease;
-  }
-  .nav-cta:hover { background: #82b018; border-color: #82b018; }
-  .nav-cta.active { box-shadow: 0 2px 10px rgba(156,211,30,0.50); }
-
-  /* ── Controls ── */
   #controls {
-    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    position: fixed; bottom: 64px; left: 50%; transform: translateX(-50%);
     display: flex; gap: 6px; z-index: 100; pointer-events: none;
   }
   .ctrl {
@@ -142,53 +141,212 @@
     color: #555; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
   .ctrl-icon { font-size: 13px; line-height: 1; }
-  .ctrl-dot { width: 13px; height: 13px; border-radius: 50%; background: #9cd31e; display: inline-block; flex-shrink: 0; }
+  .ctrl-dot-a { width: 10px; height: 10px; border-radius: 50%; background: #9cd31e; display: inline-block; flex-shrink: 0; }
+  .ctrl-dot-b { width: 10px; height: 10px; border-radius: 50%; background: #3a6000; display: inline-block; flex-shrink: 0; margin-left: -4px; }
 
-  /* ── Mobile ── */
   @media (max-width: 600px) {
     #hemi-labels { display: none; }
     #controls { gap: 3px; bottom: 14px; }
     .ctrl { font-size: 9px; padding: 4px 7px; gap: 3px; }
-    .ctrl-icon { font-size: 10px; }
     .ctrl-long { display: none; }
+    #logo-pin { padding: 0 8px; }
+    #logo-pin .logo-text { font-size: 18px; }
   }
 
-  /* ── Hemisphere tags ── */
+  .float-bubble {
+    position: fixed; z-index: 400; cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-radius: 30px;
+    font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px;
+    color: #fff; white-space: nowrap; user-select: none;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+    animation: floatBob 3s ease-in-out infinite;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .float-bubble:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 10px 32px rgba(0,0,0,0.22); }
+  .float-bubble .fb-emoji { font-size: 18px; line-height: 1; }
+
+  .float-bubble[data-path="protect"]  { background: rgba(122,170,16,0.90); animation-delay: 0s; color: #fff; }
+  .float-bubble[data-path="grow"]     { background: rgba(58,96,0,0.88);    animation-delay: 0.6s; }
+  .float-bubble[data-path="discover"] { background: rgba(156,211,30,0.88); animation-delay: 1.1s; color: #1a3000; }
+
+  @keyframes floatBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  .float-bubble.fly-away { animation: flyUp 0.45s ease-in forwards !important; }
+  .float-bubble.fade-away { animation: fadeSlow 1.8s ease forwards !important; pointer-events: none; }
+  @keyframes flyUp { 0% { opacity:1; transform:translateY(0) scale(1); } 100% { opacity:0; transform:translateY(-140px) scale(0.7); } }
+  @keyframes fadeSlow { 0% { opacity:1; } 40% { opacity:0.6; } 100% { opacity:0; } }
+
+  #path-guide {
+    display: none;
+    position: fixed; bottom: 54px; left: 20px; z-index: 300;
+    background: rgba(20,40,10,0.94); border-radius: 18px;
+    padding: 14px 20px; min-width: 280px; max-width: 360px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.40);
+    border: 1.5px solid rgba(156,211,30,0.20);
+    text-align: center;
+  }
+  #path-guide.visible { display: block; animation: tipIn 0.3s ease; }
+  #pg-exit { position: absolute; top: 10px; right: 14px; font-size: 10px; color: rgba(255,255,255,0.35); cursor: pointer; font-weight: 700; }
+  #pg-exit:hover { color: rgba(255,255,255,0.7); }
+  #pg-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--path-color, #9cd31e); margin-bottom: 6px; font-family: 'Nunito', sans-serif; }
+  #pg-step  { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 10px; font-family: 'Nunito', sans-serif; line-height: 1.3; }
+  #pg-dots  { display: flex; gap: 6px; justify-content: center; margin-bottom: 12px; }
+  .pg-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.20); transition: all 0.2s; }
+  .pg-dot.done   { background: var(--path-color, #9cd31e); opacity: 0.6; }
+  .pg-dot.active { background: var(--path-color, #9cd31e); transform: scale(1.35); }
+  #pg-nav { display: flex; gap: 10px; justify-content: center; }
+  #pg-nav button { font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 800; padding: 7px 18px; border-radius: 20px; border: none; cursor: pointer; transition: all 0.15s; }
+  #pg-back { background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.6); }
+  #pg-back:hover { background: rgba(255,255,255,0.18); color: #fff; }
+  #pg-next { background: var(--path-color, #9cd31e); color: #1a3000; box-shadow: 0 2px 10px rgba(0,0,0,0.25); }
+  #pg-next:hover { opacity: 0.88; }
+
   #hemi-labels {
     position: fixed; left: 18px; top: 50%; transform: translateY(-50%);
     display: flex; flex-direction: column; gap: 8px; z-index: 100; pointer-events: none;
   }
-  .hemi-tag { font-family: 'Nunito', sans-serif; font-size: 9px; font-weight: 800;
-    letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
+  .hemi-tag { font-family: 'Nunito', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
   .hemi-tag.a { background: rgba(156,211,30,0.12); color: #3a6000; border: 1px solid rgba(156,211,30,0.35); }
-  .hemi-tag.b { background: rgba(58,96,0,0.07);    color: #333;    border: 1px solid rgba(58,96,0,0.18);   }
+  .hemi-tag.b { background: rgba(58,96,0,0.10); color: #3a6000; border: 1px solid rgba(58,96,0,0.25); }
+
+  #content-panel {
+    position: fixed; top: 52px; right: 0; bottom: 44px;
+    width: 380px; z-index: 300;
+    background: rgba(255,255,255,0.97);
+    border-left: 1px solid #eee;
+    box-shadow: -4px 0 24px rgba(0,0,0,0.08);
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  #content-panel.visible { transform: translateX(0); }
+
+  #cp-resize-handle {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 6px;
+    cursor: col-resize; z-index: 10; background: transparent; transition: background 0.2s;
+  }
+  #cp-resize-handle:hover, #cp-resize-handle.dragging { background: rgba(156,211,30,0.30); }
+  #cp-resize-handle::after { content: ''; position: absolute; left: 2px; top: 50%; transform: translateY(-50%); width: 2px; height: 32px; border-radius: 2px; background: rgba(156,211,30,0.50); }
+
+  /* ── Path bar (top of content panel when journey active) ── */
+  #cp-path-bar {
+    display: none;
+    position: absolute; top: 0; left: 0; right: 0; height: 46px; z-index: 10;
+    align-items: center; gap: 10px; padding: 0 12px;
+    background: #fff; border-bottom: 2px solid var(--pb-color, #9cd31e);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  #cpb-info { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+  #cpb-label { font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--pb-color, #9cd31e); font-family: 'Nunito', sans-serif; }
+  #cpb-step  { font-size: 12px; font-weight: 800; color: #222; font-family: 'Nunito', sans-serif; }
+  #cpb-back, #cpb-next {
+    font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800;
+    padding: 5px 14px; border-radius: 20px; border: none; cursor: pointer;
+    transition: all 0.15s; white-space: nowrap; flex-shrink: 0;
+  }
+  #cpb-back { background: #f0f0f0; color: #666; }
+  #cpb-back:hover { background: #e0e0e0; }
+  #cpb-next { background: var(--pb-color, #9cd31e); color: #1a3000; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+  #cpb-next:hover { opacity: 0.88; }
+
+  body.path-active.panel-open #cp-path-bar { display: flex; }
+  body.path-active.panel-open #cp-inner { top: 46px; }
+  body.panel-open #path-guide { display: none !important; }
+
+  #cp-inner {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 40px;
+    overflow-y: auto; padding: 20px 20px 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin; scrollbar-color: #ccc transparent;
+  }
+  #cp-step-badge {
+    display: inline-block; font-size: 10px; font-weight: 800;
+    letter-spacing: 1px; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 20px; margin-bottom: 10px;
+    background: rgba(156,211,30,0.14); color: #3a6000;
+    font-family: 'Nunito', sans-serif;
+  }
+  #cp-title { font-size: 18px; font-weight: 900; color: #1a1a2e; margin-bottom: 8px; line-height: 1.25; font-family: 'Nunito', sans-serif; }
+  #cp-intro { font-size: 13px; color: #666; line-height: 1.65; margin-bottom: 20px; font-family: 'Nunito', sans-serif; border-left: 3px solid #9cd31e; padding-left: 12px; }
+
+  .cp-card { background: #f9f9f9; border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; position: relative; border: 1px solid #f0f0f0; transition: box-shadow 0.15s; }
+  .cp-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .cp-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .cp-card-icon { font-size: 18px; }
+  .cp-card-title { font-size: 13px; font-weight: 800; color: #1a1a2e; font-family: 'Nunito', sans-serif; }
+  .cp-card-body  { font-size: 12px; color: #555; line-height: 1.65; font-family: 'Nunito', sans-serif; margin-bottom: 8px; }
+
+  .cp-articles { margin-top: 10px; }
+  .cp-articles-label { font-size: 10px; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-family: 'Nunito', sans-serif; }
+  .cp-article-list { list-style: none; padding: 0; margin: 0; }
+  .cp-article-item { display: flex; align-items: baseline; gap: 6px; padding: 4px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
+  .cp-article-item:hover .cp-article-title { color: #3a6000; }
+  .cp-article-dot { color: #9cd31e; font-size: 14px; flex-shrink: 0; }
+  .cp-article-title { font-size: 12px; color: #444; font-family: 'Nunito', sans-serif; line-height: 1.4; }
+
+  /* Book a meeting CTA inside panel */
+  .cp-cta-btn {
+    display: inline-block; margin-top: 8px;
+    background: #9cd31e; color: #1a3000;
+    font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800;
+    padding: 6px 16px; border-radius: 20px; cursor: pointer; border: none;
+    transition: all 0.15s;
+  }
+  .cp-cta-btn:hover { background: #7aaa10; }
+
+  #cp-admin-bar {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 40px; border-top: 1px solid #eee;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px; background: #fafafa;
+  }
+  #cp-admin-label { font-size: 11px; color: #aaa; font-family: 'Nunito', sans-serif; font-weight: 700; }
+  .cp-toggle-wrap { position: relative; display: inline-block; width: 36px; height: 20px; }
+  .cp-toggle-wrap input { opacity: 0; width: 0; height: 0; }
+  .cp-toggle-slider { position: absolute; cursor: pointer; inset: 0; background: #ddd; border-radius: 20px; transition: 0.2s; }
+  .cp-toggle-slider:before { content: ''; position: absolute; width: 14px; height: 14px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: 0.2s; }
+  .cp-toggle-wrap input:checked + .cp-toggle-slider { background: #9cd31e; }
+  .cp-toggle-wrap input:checked + .cp-toggle-slider:before { transform: translateX(16px); }
+
+  @media (max-width: 860px) {
+    #content-panel { width: 100%; top: 52px; bottom: 44px; }
+    #cp-admin-bar { position: sticky; bottom: 0; }
+    #path-guide {
+      left: 0; right: 0; bottom: 44px; border-radius: 0;
+      max-width: 100%; min-width: 100%; box-sizing: border-box; padding: 8px 14px;
+    }
+    #path-guide.visible { display: flex; flex-direction: row; align-items: center; gap: 8px; }
+    #pg-label { display: none; }
+    #pg-dots  { display: none; }
+    #pg-step  { font-size: 12px; margin: 0; flex: 1; line-height: 1.3; }
+    #pg-exit  { position: static; font-size: 10px; flex-shrink: 0; order: -1; }
+    #pg-nav   { flex-direction: row; gap: 6px; margin: 0; flex-shrink: 0; }
+    #pg-nav button { padding: 5px 14px; font-size: 11px; }
+    body.path-active:not(.panel-open) #content-panel { bottom: 96px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- Header: logo pinned left, pills scroll right -->
 <div id="header">
   <div id="logo-pin">
-    <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/EnEfD8EkdmRMu6E68Llz/media/872362e7-eb84-43b4-970e-86ba9813aaef.png"
-         alt="attooh!" style="height:26px;width:auto;display:block;" referrerpolicy="no-referrer">
+    <a href="https://attooh.co.za" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+      <span class="logo-text" style="font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;color:#9cd31e;letter-spacing:-0.5px;">attooh!</span>
+      <span style="font-size:9px;font-weight:700;color:#aaa;font-family:'Nunito',sans-serif;letter-spacing:0.5px;text-transform:uppercase;">Financial Services</span>
+    </a>
   </div>
-  <!-- Nav pills — populated by JS, scroll horizontally -->
   <div id="nav-wrap"><div id="nav-bar"></div></div>
+  <div id="change-path" title="Choose a different guide">← My Guide</div>
 </div>
 
-<!-- Hemisphere tags -->
 <div id="hemi-labels">
-  <div class="hemi-tag a">▲ Services</div>
-  <div class="hemi-tag b">▼ Identity</div>
+  <div class="hemi-tag a">▲ Our Services</div>
+  <div class="hemi-tag b">▼ Our Story</div>
 </div>
 
-<!-- Canvas -->
 <div id="canvas-container"></div>
 
-<!-- Mini tooltip -->
 <div id="mini-tip">
   <span id="mt-close">✕</span>
-  <img id="mt-photo" src="" alt="" referrerpolicy="no-referrer">
   <div id="mt-content">
     <div id="mt-label"></div>
     <div id="mt-body"></div>
@@ -196,12 +354,53 @@
   </div>
 </div>
 
-<!-- Controls -->
+<div class="float-bubble" data-path="protect"  style="left:12%; top:38%"><span class="fb-emoji">🛡️</span> Protect My Life</div>
+<div class="float-bubble" data-path="grow"      style="left:38%; top:22%"><span class="fb-emoji">📈</span> Grow My Wealth</div>
+<div class="float-bubble" data-path="discover"  style="right:12%; top:32%"><span class="fb-emoji">🏅</span> About attooh!</div>
+
+<div id="content-panel">
+  <div id="cp-resize-handle"></div>
+  <div id="cp-path-bar">
+    <button id="cpb-back">← Back</button>
+    <div id="cpb-info">
+      <span id="cpb-label"></span>
+      <span id="cpb-step"></span>
+    </div>
+    <button id="cpb-next">Next →</button>
+  </div>
+  <div id="cp-inner">
+    <div id="cp-step-badge"></div>
+    <div id="cp-title"></div>
+    <div id="cp-intro"></div>
+    <div id="cp-items"></div>
+  </div>
+  <div id="cp-admin-bar">
+    <span id="cp-admin-label">Admin mode</span>
+    <label class="cp-toggle-wrap">
+      <input type="checkbox" id="cp-admin-toggle">
+      <span class="cp-toggle-slider"></span>
+    </label>
+  </div>
+</div>
+
+<div id="bottom-bar"><div id="bottom-scroll"></div></div>
+
 <div id="controls">
+  <div class="ctrl"><span class="ctrl-icon">🫧</span> <span class="ctrl-long">Tap a bubble to start a guide</span></div>
   <div class="ctrl"><span class="ctrl-icon">👆</span> <span class="ctrl-long">Drag to spin</span></div>
   <div class="ctrl"><span class="ctrl-icon">🔍</span> <span class="ctrl-long">Scroll to zoom</span></div>
-  <div class="ctrl"><span class="ctrl-icon">✌️</span> <span class="ctrl-long">Two fingers to move</span></div>
-  <div class="ctrl"><span class="ctrl-dot"></span> <span class="ctrl-long">Tap to spotlight</span></div>
+  <div class="ctrl"><span class="ctrl-dot-a"></span><span class="ctrl-dot-b"></span> <span class="ctrl-long">Tap any node to read</span></div>
+</div>
+
+<div id="path-guide">
+  <div id="pg-exit">✕ Exit guide</div>
+  <div id="pg-label"></div>
+  <div id="pg-step"></div>
+  <div id="pg-dots"></div>
+  <div id="pg-nav">
+    <button id="pg-back">← Back</button>
+    <button id="pg-next">Next →</button>
+  </div>
 </div>
 
 <script type="importmap">
@@ -213,207 +412,296 @@
 }
 </script>
 <script type="module">
-import * as THREE from 'three';
-import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import * as THREE from "three";
+import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 
 // ── DATA ─────────────────────────────────────────────────────────────────────
 
+const BASE = "https://attooh.co.za";
+const CTA  = "https://coffeedate.attooh.co.za";
+
 const strandA = [
   {
-    id: 'insurance', label: 'Personal Insurance', strand: 'A',
-    tip: 'Comprehensive protection for you and your family.',
+    id: "insurance", label: "Personal Insurance", strand: "A",
+    tip: "Comprehensive protection for you and your family.",
     children: [
-      { id: 'life',       label: 'Life Insurance',    tip: 'Protects your family\'s lifestyle and financial stability if you\'re no longer there.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'disability', label: 'Disability Cover',  tip: 'Income replacement if injury or illness stops you from working permanently.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'income',     label: 'Income Protection', tip: 'Monthly income if you\'re temporarily or permanently unable to work.', url: 'https://coffeedate.attooh.co.za' },
+      { id: "life",       label: "Life Insurance",    tip: "Protects your family's lifestyle and financial stability if you're no longer there.", url: CTA },
+      { id: "disability", label: "Disability Cover",  tip: "Income replacement if injury or illness stops you from working permanently.", url: CTA },
+      { id: "income",     label: "Income Protection", tip: "Monthly income if you're temporarily or permanently unable to work.", url: CTA },
     ]
   },
   {
-    id: 'health', label: 'Health & Medical', strand: 'A',
-    tip: 'The right medical cover for your unique situation.',
+    id: "health", label: "Health & Medical", strand: "A",
+    tip: "The right medical cover for your unique situation.",
     children: [
-      { id: 'medaid', label: 'Medical Aid',   tip: 'Comprehensive medical cover — we compare options to find the right fit for you.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'gap',    label: 'Gap Cover',     tip: 'Bridges the shortfall between medical aid payouts and specialist fees.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'dread',  label: 'Dread Disease', tip: 'Lump-sum payout on diagnosis of a life-altering illness like cancer or stroke.', url: 'https://coffeedate.attooh.co.za' },
+      { id: "medaid", label: "Medical Aid",   tip: "Comprehensive medical cover — we compare options to find the right fit for you.", url: CTA },
+      { id: "gap",    label: "Gap Cover",     tip: "Bridges the shortfall between medical aid payouts and specialist fees.", url: CTA },
+      { id: "dread",  label: "Dread Disease", tip: "Lump-sum payout on diagnosis of a life-altering illness like cancer or stroke.", url: CTA },
     ]
   },
   {
-    id: 'wealth', label: 'Wealth & Investments', strand: 'A',
-    tip: 'Grow, protect, and transfer your wealth strategically.',
+    id: "wealth", label: "Wealth & Investments", strand: "A",
+    tip: "Grow, protect, and transfer your wealth strategically.",
     children: [
-      { id: 'tfsa',     label: 'Tax-Free Savings',    tip: 'R36 000/year invested tax-free — the most efficient savings vehicle in SA.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'offshore', label: 'Offshore Investments', tip: 'Diversify internationally. Growth potential + currency protection.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'unitrust', label: 'Unit Trusts',          tip: 'Professionally managed, diversified investment portfolios for all risk profiles.', url: 'https://coffeedate.attooh.co.za' },
+      { id: "tfsa",     label: "Tax-Free Savings",    tip: "R36 000/year invested tax-free — the most efficient savings vehicle in SA.", url: CTA },
+      { id: "offshore", label: "Offshore Investments", tip: "Diversify internationally. Growth potential and currency protection.", url: CTA },
+      { id: "unitrust", label: "Unit Trusts",          tip: "Professionally managed, diversified investment portfolios for all risk profiles.", url: CTA },
     ]
   },
   {
-    id: 'retirement', label: 'Retirement Planning', strand: 'A',
-    tip: 'The retirement you\'ve worked for, actually arriving as planned.',
+    id: "retirement", label: "Retirement Planning", strand: "A",
+    tip: "The retirement you've worked for, actually arriving as planned.",
     children: [
-      { id: 'ra', label: 'Retirement Annuity', tip: 'Tax-deductible contributions growing for your retirement — the cornerstone product.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'pf', label: 'Provident Fund',     tip: 'Employer-linked fund building retirement capital with tax advantages.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'la', label: 'Living Annuity',     tip: 'Flexible income draw-down in retirement from your accumulated fund.', url: 'https://coffeedate.attooh.co.za' },
+      { id: "ra", label: "Retirement Annuity", tip: "Tax-deductible contributions growing for your retirement — the cornerstone product.", url: CTA },
+      { id: "pf", label: "Provident Fund",     tip: "Employer-linked fund building retirement capital with tax advantages.", url: CTA },
+      { id: "la", label: "Living Annuity",     tip: "Flexible income draw-down in retirement from your accumulated fund.", url: CTA },
     ]
   },
   {
-    id: 'estate', label: 'Estate & Wills', strand: 'A',
-    tip: 'Start with the end in mind. Protect what you\'ve built.',
+    id: "estate", label: "Estate & Wills", strand: "A",
+    tip: "Start with the end in mind. Protect what you've built.",
     children: [
-      { id: 'freewill', label: 'Free Will',       tip: 'attooh! offers complimentary will drafting. Click to claim yours.', url: 'https://attooh.co.za/your-will' },
-      { id: 'estate2',  label: 'Estate Planning', tip: 'Comprehensive plan to protect and distribute your estate as intended.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'trust',    label: 'Trust Setup',     tip: 'Legally structured trusts to protect your assets and provide for your family.', url: 'https://coffeedate.attooh.co.za' },
+      { id: "freewill", label: "Free Will",       tip: "attooh! offers complimentary will drafting. Click to claim yours.", url: BASE + "/your-will" },
+      { id: "estate2",  label: "Estate Planning", tip: "Comprehensive plan to protect and distribute your estate as intended.", url: CTA },
+      { id: "trust",    label: "Trust Setup",     tip: "Legally structured trusts to protect your assets and provide for your family.", url: CTA },
     ]
   },
   {
-    id: 'employee', label: 'Employee Benefits', strand: 'A',
-    tip: 'Attract and retain top talent with smart benefit packages.',
+    id: "employee", label: "Employee Benefits", strand: "A",
+    tip: "Attract and retain top talent with smart benefit packages.",
     children: [
-      { id: 'grouplife', label: 'Group Life',      tip: 'Cost-effective group life cover protecting your entire team at once.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'groupdis',  label: 'Group Disability', tip: 'Group disability income protection — your team\'s security, covered.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'groupmed',  label: 'Group Medical',   tip: 'Medical aid for your team — negotiated group rates, expert guidance.', url: 'https://coffeedate.attooh.co.za' },
+      { id: "grouplife", label: "Group Life",      tip: "Cost-effective group life cover protecting your entire team at once.", url: CTA },
+      { id: "groupdis",  label: "Group Disability", tip: "Group disability income protection — your team's security, covered.", url: CTA },
+      { id: "groupmed",  label: "Group Medical",   tip: "Medical aid for your team — negotiated group rates, expert guidance.", url: CTA },
     ]
   },
   {
-    id: 'business', label: 'Business Protection', strand: 'A',
-    tip: 'Protect the business you\'ve built from the unexpected.',
+    id: "business", label: "Business Protection", strand: "A",
+    tip: "Protect the business you've built from the unexpected.",
     children: [
-      { id: 'buysell', label: 'Buy-Sell Agreements',  tip: 'Ensures business continuity if a partner dies or becomes disabled.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'keyman',  label: 'Keyman Insurance',     tip: 'Compensates the business for losing its most critical person.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'contlib', label: 'Contingent Liability', tip: 'Protects business liquidity and personal assets from creditor claims.', url: 'https://coffeedate.attooh.co.za' },
+      { id: "buysell", label: "Buy-Sell Agreements",  tip: "Ensures business continuity if a partner dies or becomes disabled.", url: CTA },
+      { id: "keyman",  label: "Keyman Insurance",     tip: "Compensates the business for losing its most critical person.", url: CTA },
+      { id: "contlib", label: "Contingent Liability", tip: "Protects business liquidity and personal assets from creditor claims.", url: CTA },
     ]
   },
   {
-    id: 'education', label: 'Financial Education', strand: 'A',
-    tip: 'Finance should be understood, not feared.',
+    id: "education", label: "Financial Education", strand: "A",
+    tip: "Finance should be understood, not feared.",
     children: [
-      { id: 'kidsave',  label: 'Kids Savings',       tip: 'Start your child\'s financial future now — even small amounts compound powerfully.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'coaching', label: 'Financial Coaching', tip: '1-on-1 sessions with an advisor to build your money mindset and financial plan.', url: 'https://coffeedate.attooh.co.za' },
-      { id: 'teenfin',  label: 'Teen Financial Lit.', tip: 'Teaching teenagers the 50/30/20 rule and how to manage money from day one.', url: 'https://attooh.co.za/post/teens-and-budgeting' },
+      { id: "kidsave",  label: "Kids Savings",       tip: "Start your child's financial future now — even small amounts compound powerfully.", url: CTA },
+      { id: "coaching", label: "Financial Coaching", tip: "1-on-1 sessions with an advisor to build your money mindset and financial plan.", url: CTA },
+      { id: "teenfin",  label: "Teen Financial Lit", tip: "Teaching teenagers the 50/30/20 rule and how to manage money from day one.", url: BASE + "/post/teens-and-budgeting" },
     ]
   },
 ];
 
 const strandB = [
   {
-    id: 'brand', label: 'attooh!', strand: 'B',
-    tip: 'Your Financial Services Boutique since 1978.',
+    id: "brand", label: "attooh!", strand: "B",
+    tip: "Your Financial Services Boutique since 1978.",
     children: [
-      { id: 'mission', label: 'Our Mission',   tip: 'We make ordinary people millionaires and make millionaires financially independent.' },
-      { id: 'stat45',  label: '45+ Years',     tip: 'Four and a half decades of helping South Africans build real, lasting wealth.' },
-      { id: 'stat350', label: '350+ Advisors', tip: 'A national network of qualified financial advisors — expert guidance wherever you are.' },
+      { id: "mission", label: "Our Mission",   tip: "We make ordinary people millionaires and make millionaires financially independent." },
+      { id: "stat45",  label: "45+ Years",     tip: "Four and a half decades of helping South Africans build real, lasting wealth." },
+      { id: "stat350", label: "350+ Advisors", tip: "A national network of qualified financial advisors — expert guidance wherever you are." },
     ]
   },
   {
-    id: 'team', label: 'Our Team', strand: 'B',
-    tip: 'The humans behind attooh! — passionate, qualified, dedicated.',
+    id: "team", label: "Our Team", strand: "B",
+    tip: "The humans behind attooh! — passionate, qualified, dedicated.",
     children: [
-      { id: 'wouter',   label: 'Wouter Snyman',   tip: 'CEO & Founder. 33+ years in finance. Author of 11 books. Living proof that ordinary people become millionaires.', photo: 'https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/Z5B7vlhEc7KdPsTwvvCM/media/683042a7a746511c59981e38.webp' },
-      { id: 'madeleen', label: 'Madeleen vdBerg', tip: 'MD, Health & Wealth — delivering comprehensive financial wellness solutions nationwide.', photo: 'https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/Z5B7vlhEc7KdPsTwvvCM/media/683042a7dd67d166bf87024d.webp' },
-      { id: 'philip',   label: 'Philip Roesch',   tip: 'MD, Financial Wellness — driving advisor development across the attooh! national network.', photo: 'https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/Z5B7vlhEc7KdPsTwvvCM/media/683042a7dd67d1c3a787024e.webp' },
+      { id: "wouter",   label: "Wouter Snyman",   tip: "CEO & Founder. 33+ years in finance. Author of 11 books. Living proof that ordinary people become millionaires." },
+      { id: "madeleen", label: "Madeleen vdBerg", tip: "MD, Health & Wealth — delivering comprehensive financial wellness solutions nationwide." },
+      { id: "philip",   label: "Philip Roesch",   tip: "MD, Financial Wellness — driving advisor development across the national network." },
     ]
   },
   {
-    id: 'story', label: 'Our Story', strand: 'B',
-    tip: '45 years from a soccer field to celebrating client victories.',
+    id: "story", label: "Our Story", strand: "B",
+    tip: "45 years from a soccer field to celebrating client victories.",
     children: [
-      { id: 'origin',   label: 'The Beginning', tip: 'Wouter heard kids celebrate a soccer victory with a spontaneous "attooh!" — and built a company around that feeling of authentic achievement.' },
-      { id: 'mission2', label: 'The Mission',   tip: 'Every financial plan we build, every milestone we help a client reach — it\'s another attooh! moment.' },
-      { id: 'today',    label: 'Today',         tip: '350+ advisors. Nationwide. Still driven by the same mission: making ordinary people millionaires.', url: 'https://attooh.co.za/our-story' },
+      { id: "origin",   label: "The Beginning", tip: "Wouter heard kids celebrate a soccer victory with a spontaneous 'attooh!' — and built a company around that feeling of authentic achievement." },
+      { id: "mission2", label: "The Mission",   tip: "Every financial plan we build, every milestone we help a client reach — it's another attooh! moment." },
+      { id: "today",    label: "Today",         tip: "350+ advisors. Nationwide. Still driven by the same mission: making ordinary people millionaires.", url: BASE + "/our-story" },
     ]
   },
   {
-    id: 'values', label: 'Our Values', strand: 'B',
-    tip: 'The principles that guide every decision we make.',
+    id: "values", label: "Our Values", strand: "B",
+    tip: "The principles that guide every decision we make.",
     children: [
-      { id: 'loveserve',  label: 'Love & Serve',     tip: 'Love what we do, serve every client as a valued family member, remember every milestone.' },
-      { id: 'ethics',     label: 'Ethical Practice', tip: 'Unashamedly ethical. No shortcuts. Transparent with every client, every time.' },
-      { id: 'innovation', label: 'Innovation',       tip: 'Finance should be fun and life-giving. We constantly find better ways to help you win.' },
+      { id: "loveserve",  label: "Love & Serve",     tip: "Love what we do, serve every client as a valued family member, remember every milestone." },
+      { id: "ethics",     label: "Ethical Practice", tip: "Unashamedly ethical. No shortcuts. Transparent with every client, every time." },
+      { id: "innovation", label: "Innovation",       tip: "Finance should be fun and life-giving. We constantly find better ways to help you win." },
     ]
   },
   {
-    id: 'track', label: 'Track Record', strand: 'B',
-    tip: 'Proven results across every South African economic cycle since 1978.',
+    id: "track", label: "Track Record", strand: "B",
+    tip: "Proven results across every South African economic cycle since 1978.",
     children: [
-      { id: 'tr45',     label: '45 Years Proven',  tip: 'Through recessions, booms, and everything between — we\'ve guided clients to wealth consistently.' },
-      { id: 'trfsca',   label: 'FSCA Regulated',   tip: 'Fully compliant with the Financial Sector Conduct Authority. Your money is protected.' },
-      { id: 'trnation', label: 'National Network', tip: '350+ advisors across South Africa — expert, qualified, and trained in the attooh! philosophy.' },
+      { id: "tr45",     label: "45 Years Proven",  tip: "Through recessions, booms, and everything between — we've guided clients to wealth consistently." },
+      { id: "trfsca",   label: "FSCA Regulated",   tip: "Fully compliant with the Financial Sector Conduct Authority. Your money is protected." },
+      { id: "trnation", label: "National Network", tip: "350+ advisors across South Africa — expert, qualified, trained in the attooh! philosophy." },
     ]
   },
   {
-    id: 'books', label: "Wouter's Books", strand: 'B',
-    tip: '11 books on wealth, mindset, and financial freedom.',
+    id: "books", label: "Wouter's Books", strand: "B",
+    tip: "11 books on wealth, mindset, and financial freedom.",
     children: [
-      { id: 'book1', label: 'The Ordinary Millionaire',         tip: 'How everyday South Africans build real wealth through consistent, disciplined planning.', url: 'https://attooh.co.za/our-story' },
-      { id: 'book2', label: 'Would a Porsche Change Your Life?', tip: 'A thought-provoking look at money, mindset, and what genuine wealth actually means.', url: 'https://attooh.co.za/our-story' },
-      { id: 'book3', label: '30+ eBooks',                       tip: 'From teaching kids about money to offshore strategy — Wouter shares everything he knows.', url: 'https://attooh.co.za/our-story' },
+      { id: "book1", label: "The Ordinary Millionaire",          tip: "How everyday South Africans build real wealth through consistent, disciplined planning.", url: BASE + "/our-story" },
+      { id: "book2", label: "Would a Porsche Change Your Life?", tip: "A thought-provoking look at money, mindset, and what genuine wealth actually means.", url: BASE + "/our-story" },
+      { id: "book3", label: "30+ eBooks",                        tip: "From teaching kids about money to offshore strategy — Wouter shares everything he knows.", url: BASE + "/our-story" },
     ]
   },
   {
-    id: 'blog', label: 'Blog & Insights', strand: 'B',
-    tip: 'Practical financial wisdom, in plain language.',
+    id: "blog", label: "Blog & Insights", strand: "B",
+    tip: "Practical financial wisdom, in plain language.",
     children: [
-      { id: 'blog1', label: 'Youth & Finance',     tip: 'Teaching your teenager the 50/30/20 rule. Economic literacy starts at home.', url: 'https://attooh.co.za/post/teens-and-budgeting' },
-      { id: 'blog2', label: 'Protect Your Legacy', tip: 'Don\'t leave your family with a bill instead of a will. Your legacy matters.', url: 'https://attooh.co.za/post/secure-your-legacy' },
-      { id: 'blog3', label: 'Read All Articles →', tip: 'Explore the full attooh! blog — financial education for every stage of life.', url: 'https://attooh.co.za/blog' },
+      { id: "blog1", label: "Youth & Finance",     tip: "Teaching your teenager the 50/30/20 rule. Economic literacy starts at home.", url: BASE + "/post/teens-and-budgeting" },
+      { id: "blog2", label: "Protect Your Legacy", tip: "Don't leave your family with a bill instead of a will. Your legacy matters.", url: BASE + "/post/secure-your-legacy" },
+      { id: "blog3", label: "Read All Articles",   tip: "Explore the full attooh! blog — financial education for every stage of life.", url: BASE + "/blog" },
     ]
   },
   {
-    id: 'contact', label: 'Get in Touch', strand: 'B',
-    tip: 'Ready to start your attooh! journey?',
+    id: "contact", label: "Get in Touch", strand: "B",
+    tip: "Ready to start your attooh! journey?",
     children: [
-      { id: 'bookmeeting', label: 'Book a Meeting', tip: 'Schedule a free consultation with an advisor near you.', url: 'https://coffeedate.attooh.co.za/' },
-      { id: 'callus',      label: 'Call Us',        tip: '+27 12 368 9900 — call us directly, we\'d love to hear from you.', url: 'tel:+27123689900' },
-      { id: 'emailus',     label: 'Email Us',       tip: 'connect@attooh.co.za — drop us a line any time.', url: 'mailto:connect@attooh.co.za' },
+      { id: "bookmeeting", label: "Book a Meeting", tip: "Schedule a free consultation with an advisor near you.", url: CTA },
+      { id: "callus",      label: "Call Us",        tip: "+27 12 368 9900 — call us directly, we would love to hear from you.", url: "tel:+27123689900" },
+      { id: "emailus",     label: "Email Us",       tip: "connect@attooh.co.za — drop us a line any time.", url: "mailto:connect@attooh.co.za" },
     ]
   },
 ];
 
 const rungHubs = [[0,1],[1,0],[2,4],[3,3],[4,2],[5,5],[6,6],[7,7]];
 
+// Pre-built lookup map
+const hubById = Object.fromEntries([...strandA, ...strandB].map(h => [h.id, h]));
+
+// ── CONTENT DATA ──────────────────────────────────────────────────────────────
+
+const ATTOOH_CONTENT = {
+  insurance: { title: "Personal Insurance", color: "#9cd31e", items: [
+    { id: "life", icon: "🛡️", title: "Life Insurance", body: "Protects your family's lifestyle and financial stability if you're no longer there. We find the right cover at the right price.", articles: [{ title: "Book a free consultation", url: CTA }] },
+    { id: "disability", icon: "💪", title: "Disability Cover", body: "Income replacement if injury or illness stops you from working permanently. Most people are more likely to be disabled than to die before retirement.", articles: [{ title: "Discuss your disability cover", url: CTA }] },
+    { id: "income", icon: "💰", title: "Income Protection", body: "Monthly income if you're temporarily or permanently unable to work. Your most valuable asset is your ability to earn.", articles: [{ title: "Get income protection advice", url: CTA }] },
+  ]},
+  health: { title: "Health & Medical", color: "#9cd31e", items: [
+    { id: "medaid", icon: "🏥", title: "Medical Aid", body: "Comprehensive medical cover — we compare all major schemes and options to find the right fit for your life and budget.", articles: [{ title: "Compare medical aid options", url: CTA }] },
+    { id: "gap", icon: "🔗", title: "Gap Cover", body: "Bridges the shortfall between what your medical aid pays out and what specialists actually charge. Often overlooked — always needed.", articles: [{ title: "Find out about gap cover", url: CTA }] },
+    { id: "dread", icon: "❤️", title: "Dread Disease Cover", body: "Lump-sum payout on diagnosis of a life-altering illness. Cancer, stroke, heart attack — ensures your finances survive when your health is challenged.", articles: [{ title: "Get dread disease advice", url: CTA }] },
+  ]},
+  wealth: { title: "Wealth & Investments", color: "#3a6000", items: [
+    { id: "tfsa", icon: "💎", title: "Tax-Free Savings Account", body: "R36 000 per year invested completely tax-free. No tax on growth, dividends, or withdrawal. The most efficient savings vehicle in South Africa.", articles: [{ title: "Start your tax-free savings", url: CTA }] },
+    { id: "offshore", icon: "🌍", title: "Offshore Investments", body: "Diversify internationally for currency protection and access to global growth. We guide you through exchange control and the best offshore vehicles.", articles: [{ title: "Explore offshore investing", url: CTA }] },
+    { id: "unitrust", icon: "📊", title: "Unit Trusts", body: "Professionally managed, diversified investment portfolios for all risk profiles. Flexible, transparent, and accessible from as little as R500/month.", articles: [{ title: "Find the right unit trust", url: CTA }] },
+  ]},
+  retirement: { title: "Retirement Planning", color: "#3a6000", items: [
+    { id: "ra", icon: "🏦", title: "Retirement Annuity", body: "Tax-deductible contributions growing for your retirement. Contributions reduce your taxable income — the government helps fund your retirement.", articles: [{ title: "Start your retirement annuity", url: CTA }] },
+    { id: "pf", icon: "🏢", title: "Provident Fund", body: "Employer-linked fund building retirement capital with significant tax advantages. We ensure your fund is correctly structured and performing.", articles: [{ title: "Review your provident fund", url: CTA }] },
+    { id: "la", icon: "⏰", title: "Living Annuity", body: "Flexible income draw-down in retirement from your accumulated fund. You decide the draw-down rate and investment strategy.", articles: [{ title: "Plan your retirement income", url: CTA }] },
+  ]},
+  estate: { title: "Estate & Wills", color: "#9cd31e", items: [
+    { id: "freewill", icon: "📜", title: "Free Will — Claim Yours", body: "attooh! offers complimentary will drafting for all clients. Without a valid will, the government decides what happens to everything you've built.", articles: [{ title: "Claim your free will", url: BASE + "/your-will" }] },
+    { id: "estate2", icon: "🏛️", title: "Estate Planning", body: "A comprehensive plan to protect and distribute your estate exactly as you intend. Minimise estate duty, avoid executor delays, protect your family.", articles: [{ title: "Book an estate planning session", url: CTA }] },
+    { id: "trust", icon: "🔐", title: "Trust Setup", body: "Legally structured trusts to protect your assets and provide for your family for generations. Often the most powerful estate planning tool available.", articles: [{ title: "Ask about trust structures", url: CTA }] },
+  ]},
+  employee: { title: "Employee Benefits", color: "#9cd31e", items: [
+    { id: "grouplife", icon: "👥", title: "Group Life Cover", body: "Cost-effective group life cover protecting your entire team at once. Group rates are significantly better than individual policies — a valued benefit.", articles: [{ title: "Get a group life quote", url: CTA }] },
+    { id: "groupdis", icon: "🛡️", title: "Group Disability", body: "Group disability income protection — your team's security, covered. Demonstrates care for employees and helps with staff retention.", articles: [{ title: "Explore group disability", url: CTA }] },
+    { id: "groupmed", icon: "❤️", title: "Group Medical Aid", body: "Medical aid for your team — negotiated group rates, expert scheme comparison, ongoing advisor support for all staff members.", articles: [{ title: "Set up group medical aid", url: CTA }] },
+  ]},
+  business: { title: "Business Protection", color: "#3a6000", items: [
+    { id: "buysell", icon: "🤝", title: "Buy-Sell Agreements", body: "Ensures business continuity if a partner dies or becomes disabled. Without this, surviving partners often face impossible buyout situations.", articles: [{ title: "Protect your business partnership", url: CTA }] },
+    { id: "keyman", icon: "🔑", title: "Keyman Insurance", body: "Compensates the business for losing its most critical person. Covers lost revenue, replacement costs, and loan obligations during transition.", articles: [{ title: "Identify and insure your keyman", url: CTA }] },
+    { id: "contlib", icon: "⚖️", title: "Contingent Liability", body: "Protects business liquidity and personal assets from creditor claims. Essential for any director with personal suretyship on business debt.", articles: [{ title: "Review your contingent liability", url: CTA }] },
+  ]},
+  education: { title: "Financial Education", color: "#9cd31e", items: [
+    { id: "kidsave", icon: "🌱", title: "Kids Savings", body: "Start your child's financial future now — even small amounts compound powerfully over time. The best gift you can give is a financial head start.", articles: [{ title: "Start a kids savings plan", url: CTA }] },
+    { id: "coaching", icon: "🎯", title: "Financial Coaching", body: "1-on-1 sessions with an advisor to build your money mindset and financial plan. Clear goals, clear strategy, clear progress.", articles: [{ title: "Book a coaching session", url: CTA }] },
+    { id: "teenfin", icon: "📱", title: "Teen Financial Literacy", body: "Teaching teenagers the 50/30/20 rule and how to manage money from day one. Economic literacy starts at home — we make it practical and fun.", articles: [{ title: "Read: Teens and Budgeting", url: BASE + "/post/teens-and-budgeting" }] },
+  ]},
+  brand: { title: "attooh!", color: "#9cd31e", items: [
+    { id: "mission", icon: "🏅", title: "Our Mission", body: "We make ordinary people millionaires and make millionaires financially independent. This isn't a tagline — it's the outcome we measure every client by.", articles: [{ title: "Meet attooh!", url: BASE }] },
+    { id: "stat45", icon: "📅", title: "45+ Years", body: "Four and a half decades of helping South Africans build real, lasting wealth. Through every economic cycle, political shift, and market storm.", articles: [{ title: "Our story", url: BASE + "/our-story" }] },
+    { id: "stat350", icon: "🗺️", title: "350+ Advisors Nationwide", body: "A national network of qualified financial advisors — expert guidance wherever you are in South Africa.", articles: [{ title: "Find an advisor near you", url: CTA }] },
+  ]},
+  team: { title: "Our Team", color: "#3a6000", items: [
+    { id: "wouter", icon: "👤", title: "Wouter Snyman — CEO & Founder", body: "33+ years in finance. Author of 11 books. Living proof that ordinary people become millionaires. Wouter has personally guided thousands of South Africans to financial independence.", articles: [{ title: "Book a consultation", url: CTA }] },
+    { id: "madeleen", icon: "👤", title: "Madeleen van den Berg — MD Health & Wealth", body: "Delivering comprehensive financial wellness solutions nationwide. Madeleen leads the health and wealth division with passion and deep expertise.", articles: [{ title: "Book a consultation", url: CTA }] },
+    { id: "philip", icon: "👤", title: "Philip Roesch — MD Financial Wellness", body: "Driving advisor development across the attooh! national network. Philip ensures every advisor delivers the attooh! standard of excellence.", articles: [{ title: "Book a consultation", url: CTA }] },
+  ]},
+  story: { title: "Our Story", color: "#3a6000", items: [
+    { id: "origin", icon: "⚽", title: "The Beginning", body: "Wouter heard kids celebrate a soccer victory with a spontaneous 'attooh!' — and built a company around that feeling of authentic achievement. Finance should feel like winning.", articles: [{ title: "Read the full story", url: BASE + "/our-story" }] },
+    { id: "mission2", icon: "🎯", title: "The Mission", body: "Every financial plan we build, every milestone we help a client reach — it's another attooh! moment. We exist to create those moments for every South African.", articles: [{ title: "Our mission", url: BASE }] },
+    { id: "today", icon: "🏢", title: "attooh! Today", body: "350+ advisors. Nationwide presence. 45 years of proven results. Still driven by the same mission: making ordinary people millionaires.", articles: [{ title: "Our story", url: BASE + "/our-story" }] },
+  ]},
+  values: { title: "Our Values", color: "#9cd31e", items: [
+    { id: "loveserve", icon: "❤️", title: "Love & Serve", body: "Love what we do, serve every client as a valued family member, remember every milestone. Your financial victories are our victories.", articles: [{ title: "Learn more about attooh!", url: BASE }] },
+    { id: "ethics", icon: "⚖️", title: "Ethical Practice", body: "Unashamedly ethical. No shortcuts. Transparent with every client, every time. We earn trust through consistent, honest action — nothing else.", articles: [{ title: "Our standards", url: BASE }] },
+    { id: "innovation", icon: "💡", title: "Innovation", body: "Finance should be fun and life-giving. We constantly find better ways to help you win — from digital tools to fresh thinking on old problems.", articles: [{ title: "Meet attooh!", url: BASE }] },
+  ]},
+  track: { title: "Track Record", color: "#3a6000", items: [
+    { id: "tr45", icon: "📈", title: "45 Years Proven", body: "Through recessions, booms, and everything between — we've guided clients to wealth consistently since 1978. Our track record spans every South African economic cycle.", articles: [{ title: "Our history", url: BASE + "/our-story" }] },
+    { id: "trfsca", icon: "✅", title: "FSCA Regulated", body: "Fully compliant with the Financial Sector Conduct Authority. Every advisor is qualified, registered, and governed. Your money is protected.", articles: [{ title: "Book with confidence", url: CTA }] },
+    { id: "trnation", icon: "🗺️", title: "National Network", body: "350+ advisors across South Africa — expert, qualified, and trained in the attooh! philosophy. Wherever you are, your advisor is nearby.", articles: [{ title: "Find your advisor", url: CTA }] },
+  ]},
+  books: { title: "Wouter's Books", color: "#9cd31e", items: [
+    { id: "book1", icon: "📗", title: "The Ordinary Millionaire", body: "How everyday South Africans build real wealth through consistent, disciplined planning. Wouter's most read book — practical, motivating, and proven.", articles: [{ title: "Explore Wouter's books", url: BASE + "/our-story" }] },
+    { id: "book2", icon: "📙", title: "Would a Porsche Change Your Life?", body: "A thought-provoking look at money, mindset, and what genuine wealth actually means. Spoiler: it's about freedom, not things.", articles: [{ title: "Explore Wouter's books", url: BASE + "/our-story" }] },
+    { id: "book3", icon: "📚", title: "30+ eBooks Available", body: "From teaching kids about money to offshore investment strategy — Wouter shares everything he knows, freely, because knowledge builds wealth.", articles: [{ title: "Access all eBooks", url: BASE + "/our-story" }] },
+  ]},
+  blog: { title: "Blog & Insights", color: "#3a6000", items: [
+    { id: "blog1", icon: "👦", title: "Youth & Finance", body: "Teaching your teenager the 50/30/20 rule. Economic literacy starts at home — practical budgeting skills that last a lifetime.", articles: [{ title: "Read: Teens and Budgeting", url: BASE + "/post/teens-and-budgeting" }] },
+    { id: "blog2", icon: "📋", title: "Protect Your Legacy", body: "Don't leave your family with a bill instead of a will. Your legacy matters — and proper planning makes the difference.", articles: [{ title: "Read: Secure Your Legacy", url: BASE + "/post/secure-your-legacy" }] },
+    { id: "blog3", icon: "📰", title: "All Articles", body: "Explore the full attooh! blog — financial education for every stage of life. Practical, honest, and always in plain language.", articles: [{ title: "Read all articles", url: BASE + "/blog" }] },
+  ]},
+  contact: { title: "Get in Touch", color: "#9cd31e", items: [
+    { id: "bookmeeting", icon: "☕", title: "Book a Meeting", body: "Schedule a free consultation with an advisor near you. No obligation, no jargon — just an honest conversation about your financial future.", articles: [{ title: "Book your free consultation →", url: CTA }] },
+    { id: "callus", icon: "📞", title: "Call Us", body: "+27 12 368 9900 — call us directly. We'd love to hear from you and answer any questions about our services.", articles: [{ title: "Call +27 12 368 9900", url: "tel:+27123689900" }] },
+    { id: "emailus", icon: "✉️", title: "Email Us", body: "connect@attooh.co.za — drop us a line any time. We respond to every message personally, usually within one business day.", articles: [{ title: "Email connect@attooh.co.za", url: "mailto:connect@attooh.co.za" }] },
+  ]},
+};
+
 // ── BUILD NAV BAR ─────────────────────────────────────────────────────────────
 
-const navBar = document.getElementById('nav-bar');
+const navBar = document.getElementById("nav-bar");
 
-// Book a Meeting — pinned first, always visible
-const ctaPill = document.createElement('div');
-ctaPill.className = 'nav-cta';
-ctaPill.textContent = 'Book a Meeting';
-ctaPill.dataset.id  = 'contact';
-navBar.appendChild(ctaPill);
+// Book a Meeting CTA — pinned first
+const ctaEl = document.createElement("div");
+ctaEl.className = "nav-cta"; ctaEl.textContent = "☕ Book a Meeting";
+ctaEl.addEventListener("click", () => window.open(CTA, "_blank"));
+navBar.appendChild(ctaEl);
 
-// All pill
-const allPill = document.createElement('div');
-allPill.className = 'nav-pill all active';
-allPill.textContent = 'All';
-allPill.dataset.id = 'all';
-navBar.appendChild(allPill);
-
-// Strand A pills
-strandA.forEach(hub => {
-  const p = document.createElement('div');
-  p.className = 'nav-pill a';
-  p.textContent = hub.label;
-  p.dataset.id  = hub.id;
+const pathDefs = [
+  { key: "protect",  label: "🛡️ Protect My Life" },
+  { key: "grow",     label: "📈 Grow My Wealth" },
+  { key: "discover", label: "🏅 About attooh!" },
+];
+pathDefs.forEach(({ key, label }) => {
+  const p = document.createElement("div");
+  p.className = "nav-pill path"; p.textContent = label; p.dataset.path = key;
   navBar.appendChild(p);
 });
 
-// Divider
-const div = document.createElement('div');
-div.className = 'nav-divider';
-navBar.appendChild(div);
+const bottomScroll = document.getElementById("bottom-scroll");
+const allPill = document.createElement("div");
+allPill.className = "nav-pill all active"; allPill.textContent = "All"; allPill.dataset.id = "all";
+bottomScroll.appendChild(allPill);
 
-// Strand B pills
+strandA.forEach(hub => {
+  const p = document.createElement("div");
+  p.className = "nav-pill a"; p.textContent = hub.label; p.dataset.id = hub.id;
+  bottomScroll.appendChild(p);
+});
+const divEl = document.createElement("div"); divEl.className = "nav-divider";
+bottomScroll.appendChild(divEl);
 strandB.forEach(hub => {
-  const p = document.createElement('div');
-  p.className = 'nav-pill b';
-  p.textContent = hub.label;
-  p.dataset.id  = hub.id;
-  navBar.appendChild(p);
+  const p = document.createElement("div");
+  p.className = "nav-pill b"; p.textContent = hub.label; p.dataset.id = hub.id;
+  bottomScroll.appendChild(p);
 });
 
 // ── SCENE ─────────────────────────────────────────────────────────────────────
 
-const container = document.getElementById('canvas-container');
+const container = document.getElementById("canvas-container");
 const W = () => container.clientWidth;
 const H = () => container.clientHeight;
 
@@ -423,7 +711,6 @@ scene.fog = new THREE.FogExp2(0xffffff, 0.005);
 
 const camera = new THREE.PerspectiveCamera(50, W() / H(), 0.1, 120);
 camera.position.set(0, 0, 32);
-camera.lookAt(0, 0, 0);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -434,182 +721,131 @@ container.appendChild(renderer.domElement);
 
 const labelRenderer = new CSS2DRenderer();
 labelRenderer.setSize(W(), H());
-labelRenderer.domElement.style.position = 'absolute';
-labelRenderer.domElement.style.top = '0';
-labelRenderer.domElement.style.left = '0';
-labelRenderer.domElement.style.pointerEvents = 'none';
-labelRenderer.domElement.style.overflow = 'hidden';
+labelRenderer.domElement.style.position = "absolute";
+labelRenderer.domElement.style.top = "0"; labelRenderer.domElement.style.left = "0";
+labelRenderer.domElement.style.pointerEvents = "none";
+labelRenderer.domElement.style.overflow = "hidden";
 container.appendChild(labelRenderer.domElement);
 
 // ── LIGHTING ──────────────────────────────────────────────────────────────────
 
 scene.add(new THREE.AmbientLight(0xffffff, 1.1));
-const limeLight = new THREE.PointLight(0x9cd31e, 2.5, 50);
-limeLight.position.set(8, 10, 12);
-scene.add(limeLight);
-const keyLight = new THREE.DirectionalLight(0xffffff, 0.8);
+const limeLight = new THREE.PointLight(0x9cd31e, 2.0, 50);
+limeLight.position.set(8, 10, 12); scene.add(limeLight);
+const darkLight = new THREE.PointLight(0x3a6000, 1.2, 50);
+darkLight.position.set(-8, -10, 8); scene.add(darkLight);
+const keyLight = new THREE.DirectionalLight(0xffffff, 0.7);
 keyLight.position.set(5, 5, 8); scene.add(keyLight);
-const fillLight = new THREE.DirectionalLight(0xdddddd, 0.4);
-fillLight.position.set(-5, -5, 4); scene.add(fillLight);
 
 // ── SPHERE GEOMETRY ───────────────────────────────────────────────────────────
 
-const SPHERE_R = 7;
-const HUB_R    = 0.50;
-const CHILD_R  = 0.20;
-
-const pivot = new THREE.Group();
-scene.add(pivot);
+const SPHERE_R = 7, HUB_R = 0.50, CHILD_R = 0.20;
+const pivot = new THREE.Group(); scene.add(pivot);
 let rotX = -0.10, rotY = 0;
 
-// Subtle wireframe background
-const bgWire = new THREE.WireframeGeometry(new THREE.SphereGeometry(SPHERE_R, 20, 16));
-pivot.add(new THREE.LineSegments(bgWire,
-  new THREE.LineBasicMaterial({ color: 0xdddddd, transparent: true, opacity: 0.10 })));
-
-// Equatorial ring
+pivot.add(new THREE.LineSegments(
+  new THREE.WireframeGeometry(new THREE.SphereGeometry(SPHERE_R, 20, 16)),
+  new THREE.LineBasicMaterial({ color: 0xdddddd, transparent: true, opacity: 0.10 })
+));
 const eqMesh = new THREE.Mesh(
   new THREE.TorusGeometry(SPHERE_R * 0.995, 0.055, 8, 100),
-  new THREE.MeshBasicMaterial({ color: 0xcccccc, transparent: true, opacity: 0.45 })
+  new THREE.MeshBasicMaterial({ color: 0xcccccc, transparent: true, opacity: 0.40 })
 );
-eqMesh.rotation.x = Math.PI / 2;
-pivot.add(eqMesh);
+eqMesh.rotation.x = Math.PI / 2; pivot.add(eqMesh);
 
-// Hub angular layout: 2 rings per hemisphere (4+4, staggered 45°)
 function hubAngles(hubIdx, isA) {
-  const sign = isA ? 1 : -1;
-  const ring  = hubIdx % 2;
-  const ri    = Math.floor(hubIdx / 2);
+  const sign = isA ? 1 : -1, ring = hubIdx % 2, ri = Math.floor(hubIdx / 2);
   if (ring === 0) return { phi: ri * Math.PI / 2,               lat: sign * 1.05 };
   else            return { phi: ri * Math.PI / 2 + Math.PI / 4, lat: sign * 0.52 };
 }
-
 function sphPos(phi, lat, r) {
   r = r !== undefined ? r : SPHERE_R;
-  return new THREE.Vector3(
-    r * Math.cos(lat) * Math.cos(phi),
-    r * Math.sin(lat),
-    r * Math.cos(lat) * Math.sin(phi)
-  );
+  return new THREE.Vector3(r * Math.cos(lat) * Math.cos(phi), r * Math.sin(lat), r * Math.cos(lat) * Math.sin(phi));
 }
-
-const CHILD_OFFSETS = [
-  { dphi: -0.30, dlat:  0.26 },
-  { dphi:  0.30, dlat:  0.26 },
-  { dphi:  0.00, dlat: -0.28 },
-];
+const CHILD_OFFSETS = [{ dphi:-0.30, dlat:0.26 }, { dphi:0.30, dlat:0.26 }, { dphi:0.00, dlat:-0.28 }];
 
 // ── MATERIALS ─────────────────────────────────────────────────────────────────
 
 function hubMat(isA) {
   return new THREE.MeshStandardMaterial({
     color: isA ? 0x7aaa10 : 0x3a6000, emissive: isA ? 0x3a5508 : 0x1a2e00,
-    emissiveIntensity: isA ? 0.3 : 0.15, roughness: 0.25, metalness: 0.45,
-    transparent: true, opacity: 1.0,
+    emissiveIntensity: 0.25, roughness: 0.25, metalness: 0.45, transparent: true, opacity: 1.0,
   });
 }
 function childMat(isA) {
   return new THREE.MeshStandardMaterial({
     color: isA ? 0x9cd31e : 0x507a00, emissive: isA ? 0x3a5508 : 0x1a2e00,
-    emissiveIntensity: 0.1, roughness: 0.4, metalness: 0.3,
-    transparent: true, opacity: 1.0,
+    emissiveIntensity: 0.1, roughness: 0.4, metalness: 0.3, transparent: true, opacity: 1.0,
   });
 }
 function glowMat(isA, isHub) {
   return new THREE.MeshBasicMaterial({
     color: isA ? 0x9cd31e : 0x3a6000, transparent: true,
-    opacity: isA ? (isHub ? 0.10 : 0.06) : (isHub ? 0.05 : 0.03), side: THREE.BackSide,
+    opacity: isHub ? 0.09 : 0.05, side: THREE.BackSide,
   });
 }
 const hoverMat = new THREE.MeshStandardMaterial({
-  color: 0xc8f040, emissive: 0x7aaa10, emissiveIntensity: 0.6,
+  color: 0xc8f040, emissive: 0x9cd31e, emissiveIntensity: 0.7,
   roughness: 0.15, metalness: 0.5, transparent: true, opacity: 1.0,
 });
 
 // ── BUILD STRANDS ─────────────────────────────────────────────────────────────
 
-const allClickable = [];
-const hubGroups    = {}; // hubId → { hubMesh, childMeshes, phi, lat, isA }
+const allClickable = [], hubGroups = {};
 
 function buildSphereStrand(strandData, isA) {
-  const hubGeo   = new THREE.SphereGeometry(HUB_R,    24, 24);
-  const childGeo = new THREE.SphereGeometry(CHILD_R,  16, 16);
-  const hubGlow  = new THREE.SphereGeometry(HUB_R   * 1.55, 16, 16);
+  const hubGeo = new THREE.SphereGeometry(HUB_R, 24, 24);
+  const childGeo = new THREE.SphereGeometry(CHILD_R, 16, 16);
+  const hubGlow  = new THREE.SphereGeometry(HUB_R * 1.55, 16, 16);
   const cGlowGeo = new THREE.SphereGeometry(CHILD_R * 1.80, 12, 12);
 
   strandData.forEach((hub, hubIdx) => {
     const { phi, lat } = hubAngles(hubIdx, isA);
-    const hPos = sphPos(phi, lat);
-    const hOut = hPos.clone().normalize();
+    const hPos = sphPos(phi, lat), hOut = hPos.clone().normalize();
 
-    // Hub glow
     const hg = new THREE.Mesh(hubGlow, glowMat(isA, true));
     hg.position.copy(hPos); pivot.add(hg);
 
-    // Hub sphere
-    const hMat  = hubMat(isA);
+    const hMat = hubMat(isA);
     const hMesh = new THREE.Mesh(hubGeo, hMat);
     hMesh.position.copy(hPos);
-    hMesh.userData = { data: hub, isHub: true, isA, originalMat: hMat, hubId: hub.id };
-    pivot.add(hMesh);
-    allClickable.push({ mesh: hMesh, data: hub, isHub: true, isA });
+    hMesh.userData = { isHub: true, data: hub, hubId: hub.id, originalMat: hMat, nodePhi: phi };
+    pivot.add(hMesh); allClickable.push({ mesh: hMesh });
 
-    // Hub label
-    const lPos = hPos.clone().addScaledVector(hOut, HUB_R + 0.55);
-    const lDiv = document.createElement('div');
-    lDiv.className   = 'node-label ' + (isA ? 'hub-a' : 'hub-b');
-    lDiv.textContent = hub.label;
-    lDiv.addEventListener('click', e => { e.stopPropagation(); selectHub(hub.id); });
-    const lObj = new CSS2DObject(lDiv);
-    lObj.position.copy(lPos);
-    pivot.add(lObj);
-    hMesh.userData.labelObj = lObj;
+    const hDiv = document.createElement("div");
+    hDiv.className = "node-label " + (isA ? "hub-a" : "hub-b");
+    hDiv.textContent = hub.label;
+    const hLabel = new CSS2DObject(hDiv);
+    hLabel.position.copy(hOut.multiplyScalar(0.72));
+    hMesh.add(hLabel);
+    hMesh.userData.labelObj = hLabel;
+    hMesh.userData.labelEl  = hDiv;
 
-    // Init hub group
-    hubGroups[hub.id] = { hubMesh: hMesh, childMeshes: [], phi, lat, isA };
+    hubGroups[hub.id] = { hubMesh: hMesh, phi, lat, isA };
 
-    // Children
     hub.children.forEach((child, ci) => {
-      const sign = isA ? 1 : -1;
-      const off  = CHILD_OFFSETS[ci];
-      const cPos = sphPos(phi + off.dphi, lat + off.dlat * sign);
-      const cOut = cPos.clone().normalize();
-
-      // Line hub→child
-      pivot.add(new THREE.Line(
-        new THREE.BufferGeometry().setFromPoints([hPos, cPos]),
-        new THREE.LineBasicMaterial({ color: isA ? 0x9cd31e : 0x3a6000, transparent: true, opacity: 0.38 })
-      ));
-
-      // Child glow + sphere
+      const off = CHILD_OFFSETS[ci % CHILD_OFFSETS.length];
+      const cPhi = phi + off.dphi;
+      const cPos = sphPos(cPhi, lat + off.dlat);
       const cg = new THREE.Mesh(cGlowGeo, glowMat(isA, false));
       cg.position.copy(cPos); pivot.add(cg);
-
-      const cMat  = childMat(isA);
+      const cMat = childMat(isA);
       const cMesh = new THREE.Mesh(childGeo, cMat);
       cMesh.position.copy(cPos);
-      cMesh.userData = { data: child, isHub: false, isA, originalMat: cMat, hubId: hub.id };
-      pivot.add(cMesh);
-      allClickable.push({ mesh: cMesh, data: child, isHub: false, isA });
-      hubGroups[hub.id].childMeshes.push(cMesh);
-
-      // Child label
-      const clPos = cPos.clone().addScaledVector(cOut, CHILD_R + 0.40);
-      const cDiv2 = document.createElement('div');
-      cDiv2.className   = 'node-label ' + (isA ? 'child-a' : 'child-b');
-      cDiv2.textContent = child.label;
-      cDiv2.addEventListener('click', e => {
-        e.stopPropagation();
-        if (child.url) window.open(child.url, '_blank');
-        else {
-          const r = cDiv2.getBoundingClientRect();
-          showMiniTip(child, r.left + r.width / 2, r.top);
-        }
-      });
-      const cLObj = new CSS2DObject(cDiv2);
-      cLObj.position.copy(clPos);
-      pivot.add(cLObj);
-      cMesh.userData.labelObj = cLObj;
+      cMesh.userData = { isHub: false, data: child, hubId: hub.id, originalMat: cMat, nodePhi: cPhi };
+      pivot.add(cMesh); allClickable.push({ mesh: cMesh });
+      const cDiv = document.createElement("div");
+      cDiv.className = "node-label " + (isA ? "child-a" : "child-b");
+      cDiv.textContent = child.label;
+      const cLabel = new CSS2DObject(cDiv);
+      cLabel.position.copy(cPos.clone().normalize().multiplyScalar(0.45));
+      cMesh.add(cLabel);
+      cMesh.userData.labelObj = cLabel;
+      cMesh.userData.labelEl  = cDiv;
+      pivot.add(new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([hPos.clone(), cPos.clone()]),
+        new THREE.LineBasicMaterial({ color: isA ? 0x9cd31e : 0x3a6000, transparent: true, opacity: 0.30 })
+      ));
     });
   });
 }
@@ -617,135 +853,253 @@ function buildSphereStrand(strandData, isA) {
 buildSphereStrand(strandA, true);
 buildSphereStrand(strandB, false);
 
-// ── CENTRE NODE — attooh! ─────────────────────────────────────────────────────
+// ── CENTER NODE ───────────────────────────────────────────────────────────────
 
-const centerMesh = new THREE.Mesh(
-  new THREE.SphereGeometry(0.55, 28, 28),
-  new THREE.MeshStandardMaterial({ color: 0x9cd31e, emissive: 0x9cd31e, emissiveIntensity: 0.6, roughness: 0.2, metalness: 0.1 })
-);
-pivot.add(centerMesh);
+const centerGeo = new THREE.SphereGeometry(1.10, 32, 32);
+const centerMat = new THREE.MeshStandardMaterial({
+  color: 0x9cd31e, emissive: 0x9cd31e, emissiveIntensity: 0.20,
+  roughness: 0.3, metalness: 0.2, transparent: true, opacity: 1.0,
+});
+const centerMesh = new THREE.Mesh(centerGeo, centerMat); pivot.add(centerMesh);
 
-// Glow rings around center
+// Glow rings
 [0.85, 1.3, 2.0].forEach((r, i) => {
   pivot.add(new THREE.Mesh(
-    new THREE.SphereGeometry(r, 20, 20),
+    new THREE.SphereGeometry(r * 1.0, 20, 20),
     new THREE.MeshBasicMaterial({ color: 0x9cd31e, transparent: true, opacity: [0.10, 0.05, 0.02][i], side: THREE.BackSide })
   ));
 });
 
-// Center label
-const cDiv = document.createElement('div');
-cDiv.className = 'node-label hub-a';
-cDiv.style.fontSize = '13px';
-cDiv.style.padding = '4px 14px';
-cDiv.textContent = 'attooh!';
-cDiv.addEventListener('click', e => { e.stopPropagation(); selectHub('all'); });
+const cDiv = document.createElement("div");
+cDiv.className = "node-label hub-a";
+cDiv.style.fontSize = "13px"; cDiv.style.padding = "4px 14px";
+cDiv.style.background = "linear-gradient(135deg, rgba(156,211,30,0.15), rgba(58,96,0,0.12))";
+cDiv.style.border = "1.5px solid rgba(156,211,30,0.55)";
+cDiv.textContent = "attooh!";
+cDiv.addEventListener("click", e => { e.stopPropagation(); activePath ? exitPath() : selectHub("all"); });
 const cLabel = new CSS2DObject(cDiv);
-cLabel.position.set(0, 0.80, 0);
-pivot.add(cLabel);
+cLabel.position.set(0, 0.85, 0); pivot.add(cLabel);
 
-// Spokes: center → each hub
 Object.values(hubGroups).forEach(({ hubMesh, isA }) => {
-  const p = hubMesh.position;
   pivot.add(new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), p.clone()]),
-    new THREE.LineBasicMaterial({ color: isA ? 0x9cd31e : 0x3a6000, transparent: true, opacity: 0.28 })
+    new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), hubMesh.position.clone()]),
+    new THREE.LineBasicMaterial({ color: isA ? 0x9cd31e : 0x3a6000, transparent: true, opacity: 0.25 })
   ));
 });
-
-// ── RUNGS ─────────────────────────────────────────────────────────────────────
 
 rungHubs.forEach(([ai, bi]) => {
   const { phi: phiA, lat: latA } = hubAngles(ai, true);
   const { phi: phiB, lat: latB } = hubAngles(bi, false);
   pivot.add(new THREE.Line(
     new THREE.BufferGeometry().setFromPoints([sphPos(phiA, latA), sphPos(phiB, latB)]),
-    new THREE.LineBasicMaterial({ color: 0xaaaaaa, transparent: true, opacity: 0.22 })
+    new THREE.LineBasicMaterial({ color: 0xbbbbbb, transparent: true, opacity: 0.20 })
   ));
 });
 
+// ── PATH DEFINITIONS ──────────────────────────────────────────────────────────
+
+const PATHS = {
+  protect:  { label: "Protect My Life",  color: "#7aaa10", hubs: ["insurance", "health",  "estate",  "business" ] },
+  grow:     { label: "Grow My Wealth",   color: "#3a6000", hubs: ["wealth",    "retirement","employee","education"] },
+  discover: { label: "About attooh!",    color: "#9cd31e", hubs: ["brand",     "team",    "story",   "values"   ] },
+};
+
 // ── SELECTION STATE ───────────────────────────────────────────────────────────
 
-let selectedHubId = null;
+let activePath = null, pathStep = 0;
+let selectedHubIds = new Set();
 let targetRotX = null, targetRotY = null;
+let pathLines = [];
+
+function rotateTo(hubId, tiltFactor = 0.75) {
+  if (!hubGroups[hubId]) return;
+  const { phi, lat } = hubGroups[hubId];
+  const rawY = Math.PI / 2 - phi;
+  let diffY = ((rawY - rotY) % (2 * Math.PI) + 3 * Math.PI) % (2 * Math.PI) - Math.PI;
+  targetRotY = rotY + diffY; targetRotX = -lat * tiltFactor;
+}
+
+function clearPathLines() { pathLines.forEach(l => pivot.remove(l)); pathLines = []; }
+
+function drawPathLines(hubs, color) {
+  clearPathLines();
+  const c = new THREE.Color(color);
+  for (let i = 0; i < hubs.length - 1; i++) {
+    const g1 = hubGroups[hubs[i]], g2 = hubGroups[hubs[i + 1]];
+    if (!g1 || !g2) continue;
+    const line = new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints([g1.hubMesh.position.clone(), g2.hubMesh.position.clone()]),
+      new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: 0.70, linewidth: 2 })
+    );
+    pivot.add(line); pathLines.push(line);
+  }
+}
+
+function updatePathGuide() {
+  if (!activePath) return;
+  const p = PATHS[activePath];
+  const isLast = pathStep === p.hubs.length - 1;
+  const hubData = hubById[p.hubs[pathStep]];
+  const stepText = `Step ${pathStep + 1} of ${p.hubs.length}: ${hubData ? hubData.label : p.hubs[pathStep]}`;
+
+  document.getElementById("path-guide").style.setProperty("--path-color", p.color);
+  document.getElementById("pg-label").textContent = p.label;
+  document.getElementById("pg-step").textContent = stepText;
+  const dots = document.getElementById("pg-dots"); dots.innerHTML = "";
+  p.hubs.forEach((_, i) => {
+    const d = document.createElement("div");
+    d.className = "pg-dot" + (i < pathStep ? " done" : i === pathStep ? " active" : "");
+    dots.appendChild(d);
+  });
+  document.getElementById("pg-back").style.display = pathStep === 0 ? "none" : "";
+  document.getElementById("pg-next").textContent = isLast ? "Finish ✓" : "Next →";
+
+  document.getElementById("cp-path-bar").style.setProperty("--pb-color", p.color);
+  document.getElementById("cpb-label").textContent = p.label;
+  document.getElementById("cpb-step").textContent = stepText;
+  document.getElementById("cpb-back").style.display = pathStep === 0 ? "none" : "";
+  document.getElementById("cpb-next").textContent = isLast ? "Finish ✓" : "Next →";
+  document.getElementById("cpb-next").style.background = isLast ? "#27ae60" : p.color;
+}
+
+function applyPathStep() {
+  if (!activePath) return;
+  const currentHub = PATHS[activePath].hubs[pathStep];
+  selectedHubIds = new Set([currentHub]);
+  autoRotate = false;
+  rotateTo(currentHub, 0.70);
+  updatePathGuide();
+  renderContentPanel(currentHub);
+}
+
+function activatePath(pathKey) {
+  activePath = pathKey; pathStep = 0;
+  fadeBubblesAway();
+  const p = PATHS[pathKey];
+  drawPathLines(p.hubs, p.color);
+  document.getElementById("path-guide").classList.add("visible");
+  document.getElementById("controls").style.display = "none";
+  document.body.classList.add("path-active");
+  applyPathStep();
+  setActivePathPill(pathKey);
+  allPill.classList.remove("active");
+}
+
+function exitPath() {
+  activePath = null; pathStep = 0;
+  selectedHubIds.clear(); hideContentPanel(); clearPathLines();
+  targetRotX = null; targetRotY = null; autoRotate = true;
+  document.getElementById("path-guide").classList.remove("visible");
+  document.getElementById("controls").style.display = "";
+  document.body.classList.remove("path-active");
+  setActivePathPill(null); setActiveNav("all");
+}
+
+document.getElementById("pg-exit").addEventListener("click", exitPath);
+document.getElementById("pg-back").addEventListener("click", () => { if (pathStep > 0) { pathStep--; applyPathStep(); } });
+document.getElementById("pg-next").addEventListener("click", () => {
+  if (!activePath) return;
+  if (pathStep < PATHS[activePath].hubs.length - 1) { pathStep++; applyPathStep(); } else exitPath();
+});
+document.getElementById("cpb-back").addEventListener("click", () => { if (pathStep > 0) { pathStep--; applyPathStep(); } });
+document.getElementById("cpb-next").addEventListener("click", () => {
+  if (!activePath) return;
+  if (pathStep < PATHS[activePath].hubs.length - 1) { pathStep++; applyPathStep(); } else exitPath();
+});
 
 function selectHub(hubId) {
-  if (hubId === selectedHubId || hubId === 'all') {
-    selectedHubId = null;
-    targetRotX = null; targetRotY = null;
-    autoRotate = true;
-    setActiveNav('all');
-    return;
+  if (activePath) return;
+  fadeBubblesAway();
+  if (hubId === "all" || (selectedHubIds.size === 1 && selectedHubIds.has(hubId))) {
+    selectedHubIds.clear(); targetRotX = null; targetRotY = null;
+    autoRotate = true; setActiveNav("all"); hideContentPanel(); return;
   }
-
-  selectedHubId = hubId;
-  autoRotate = false;
-
-  if (hubGroups[hubId]) {
-    const { phi, lat } = hubGroups[hubId];
-    const rawY = Math.PI / 2 - phi;
-    let diffY = ((rawY - rotY) % (2 * Math.PI) + 3 * Math.PI) % (2 * Math.PI) - Math.PI;
-    targetRotY = rotY + diffY;
-    targetRotX = -lat * 0.75;
-  }
-
-  setActiveNav(hubId);
+  selectedHubIds = new Set([hubId]); autoRotate = false;
+  rotateTo(hubId); setActiveNav(hubId); renderContentPanel(hubId);
 }
 
 function setActiveNav(hubId) {
-  document.querySelectorAll('.nav-pill, .nav-cta').forEach(p => {
-    p.classList.toggle('active', p.dataset.id === hubId);
-  });
-  if (!hubId || hubId === 'all') allPill.classList.add('active');
+  document.querySelectorAll(".nav-pill:not(.path)").forEach(p => p.classList.toggle("active", p.dataset.id === hubId));
+  if (!hubId || hubId === "all") allPill.classList.add("active");
+}
+function setActivePathPill(pathKey) {
+  document.querySelectorAll(".nav-pill.path").forEach(p => p.classList.toggle("active", p.dataset.path === pathKey));
 }
 
-// Nav pill + CTA clicks
-navBar.addEventListener('click', e => {
+// ── PANEL RESIZE ─────────────────────────────────────────────────────────────
+
+const contentPanel = document.getElementById("content-panel");
+const resizeHandle = document.getElementById("cp-resize-handle");
+let isResizing = false;
+resizeHandle.addEventListener("mousedown", e => { isResizing = true; resizeHandle.classList.add("dragging"); e.preventDefault(); });
+window.addEventListener("mousemove", e => {
+  if (!isResizing) return;
+  contentPanel.style.width = Math.min(Math.max(window.innerWidth - e.clientX, 280), window.innerWidth * 0.85) + "px";
+});
+window.addEventListener("mouseup", () => { if (isResizing) { isResizing = false; resizeHandle.classList.remove("dragging"); } });
+document.getElementById("change-path").addEventListener("click", () => { exitPath(); showBubbles(); });
+
+// ── FLOATING BUBBLES ──────────────────────────────────────────────────────────
+
+let bubblesVisible = true;
+function showBubbles() {
+  bubblesVisible = true;
+  document.querySelectorAll(".float-bubble").forEach(b => { b.classList.remove("fly-away","fade-away"); b.style.display = ""; });
+}
+function fadeBubblesAway() {
+  if (!bubblesVisible) return; bubblesVisible = false;
+  document.querySelectorAll(".float-bubble").forEach(b => {
+    b.classList.add("fade-away"); setTimeout(() => { b.style.display = "none"; }, 1900);
+  });
+}
+function hideBubbles(chosenPath) {
+  const bubbles = document.querySelectorAll(".float-bubble");
+  bubbles.forEach(b => b.classList.add("fly-away"));
+  setTimeout(() => { bubbles.forEach(b => { b.style.display = "none"; }); activatePath(chosenPath); }, 420);
+}
+document.querySelectorAll(".float-bubble").forEach(bubble => {
+  bubble.addEventListener("click", () => { hideBubbles(bubble.dataset.path); });
+});
+
+navBar.addEventListener("click", e => {
   if (navDragged) return;
-  const pill = e.target.closest('.nav-pill, .nav-cta');
+  const pill = e.target.closest(".nav-pill.path");
   if (!pill) return;
-  if (pill.classList.contains('nav-cta')) {
-    window.open('https://coffeedate.attooh.co.za/', '_blank');
-    return;
-  }
-  selectHub(pill.dataset.id);
+  if (activePath === pill.dataset.path) { exitPath(); return; }
+  activatePath(pill.dataset.path);
 });
 
-// Nav bar — mouse drag to scroll (desktop web)
+let bottomDragging = false, bottomDragged = false, bottomStartX = 0, bottomScrollStart = 0;
+bottomScroll.addEventListener("mousedown", e => { bottomDragging = true; bottomDragged = false; bottomStartX = e.pageX; bottomScrollStart = bottomScroll.scrollLeft; e.preventDefault(); });
+window.addEventListener("mousemove", e => { if (!bottomDragging) return; const dx = e.pageX - bottomStartX; if (Math.abs(dx) > 4) bottomDragged = true; bottomScroll.scrollLeft = bottomScrollStart - dx; });
+window.addEventListener("mouseup", () => { bottomDragging = false; });
+bottomScroll.addEventListener("wheel", e => { e.preventDefault(); bottomScroll.scrollLeft += e.deltaY + e.deltaX; }, { passive: false });
+bottomScroll.addEventListener("click", e => {
+  if (bottomDragged) return;
+  const pill = e.target.closest(".nav-pill");
+  if (!pill) return; fadeBubblesAway(); selectHub(pill.dataset.id);
+});
+
 let navDragging = false, navDragged = false, navStartX = 0, navScrollStart = 0;
-navBar.addEventListener('mousedown', e => {
-  navDragging = true; navDragged = false;
-  navStartX = e.pageX; navScrollStart = navBar.scrollLeft;
-  e.preventDefault();
-});
-window.addEventListener('mousemove', e => {
-  if (!navDragging) return;
-  const dx = e.pageX - navStartX;
-  if (Math.abs(dx) > 4) navDragged = true;
-  navBar.scrollLeft = navScrollStart - dx;
-});
-window.addEventListener('mouseup', () => { navDragging = false; });
-
-// Nav bar — mouse wheel scrolls horizontally
-navBar.addEventListener('wheel', e => {
-  e.preventDefault();
-  navBar.scrollLeft += e.deltaY + e.deltaX;
-}, { passive: false });
+navBar.addEventListener("mousedown", e => { navDragging = true; navDragged = false; navStartX = e.pageX; navScrollStart = navBar.scrollLeft; e.preventDefault(); });
+window.addEventListener("mousemove", e => { if (!navDragging) return; const dx = e.pageX - navStartX; if (Math.abs(dx) > 4) navDragged = true; navBar.scrollLeft = navScrollStart - dx; });
+window.addEventListener("mouseup", () => { navDragging = false; });
+navBar.addEventListener("wheel", e => { e.preventDefault(); navBar.scrollLeft += e.deltaY + e.deltaX; }, { passive: false });
 
 // ── INTERACTION ───────────────────────────────────────────────────────────────
 
 const raycaster = new THREE.Raycaster();
 const mouse2    = new THREE.Vector2(-9999, -9999);
-let hoveredMesh  = null;
-let autoRotate   = true;
-let mouseIsDown  = false, isDragging = false;
-let dragStartX   = 0, dragStartY = 0, lastMouseX = 0, lastMouseY = 0;
+let hoveredMesh = null, autoRotate = true;
+let mouseIsDown = false, isDragging = false;
+let dragStartX = 0, dragStartY = 0, lastMouseX = 0, lastMouseY = 0;
+const MIN_Z = 10, MAX_Z = 55;
+const DRAG_THRESHOLD = 8;
 
-const miniTip = document.getElementById('mini-tip');
-const mtLabel = document.getElementById('mt-label');
-const mtBody  = document.getElementById('mt-body');
-const mtAction= document.getElementById('mt-action');
-let tipTimeout = null;
+const miniTip = document.getElementById("mini-tip");
+const mtLabel = document.getElementById("mt-label");
+const mtBody  = document.getElementById("mt-body");
+const mtAction= document.getElementById("mt-action");
 
 function getHit(clientX, clientY) {
   const rect = container.getBoundingClientRect();
@@ -756,245 +1110,230 @@ function getHit(clientX, clientY) {
   return hits.length > 0 ? hits[0].object : null;
 }
 
-const mtPhoto = document.getElementById('mt-photo');
-document.getElementById('mt-close').addEventListener('click', () => miniTip.classList.remove('visible'));
-document.getElementById('mt-action').addEventListener('click', () => {
-  const url = miniTip.dataset.url;
-  if (url) window.open(url, '_blank');
-});
+document.getElementById("mt-close").addEventListener("click", () => miniTip.classList.remove("visible"));
+document.getElementById("mt-action").addEventListener("click", () => { const url = miniTip.dataset.url; if (url) window.open(url, "_blank"); });
 
 function showMiniTip(data, clientX, clientY) {
-  if (data.photo) {
-    mtPhoto.src = data.photo;
-    mtPhoto.style.display = 'block';
-    mtPhoto.onerror = () => { mtPhoto.style.display = 'none'; };
-  } else {
-    mtPhoto.style.display = 'none';
-  }
   mtLabel.textContent  = data.label;
-  mtBody.textContent   = data.tip || '';
-  mtAction.textContent = data.url ? 'Open →' : '';
-  miniTip.dataset.url  = data.url || '';
-  miniTip.classList.add('visible');
-  const cardW = 300, cardH = data.photo ? 320 : 160;
-  const tx = Math.min(clientX + 16, window.innerWidth  - cardW - 10);
-  const ty = Math.min(clientY - 20, window.innerHeight - cardH - 10);
-  miniTip.style.left = Math.max(10, tx) + 'px';
-  miniTip.style.top  = Math.max(62, ty) + 'px';
-  clearTimeout(tipTimeout);
+  mtBody.textContent   = data.tip || "";
+  mtAction.textContent = data.url ? "Open →" : "";
+  miniTip.dataset.url  = data.url || "";
+  miniTip.classList.add("visible");
+  const cardW = 300, cardH = 160;
+  miniTip.style.left = Math.max(10, Math.min(clientX + 16, window.innerWidth  - cardW - 10)) + "px";
+  miniTip.style.top  = Math.max(62, Math.min(clientY - 20, window.innerHeight - cardH - 10)) + "px";
 }
 
 function handleClick(clientX, clientY) {
+  const rect = container.getBoundingClientRect();
+  mouse2.x =  ((clientX - rect.left) / rect.width)  * 2 - 1;
+  mouse2.y = -((clientY - rect.top)  / rect.height) * 2 + 1;
+  raycaster.setFromCamera(mouse2, camera);
+  if (raycaster.intersectObject(centerMesh).length > 0) { activePath ? exitPath() : selectHub("all"); return; }
   const hit = getHit(clientX, clientY);
   if (!hit) {
-    miniTip.classList.remove('visible');
-    if (selectedHubIds.size > 0 && !activePath) {
-      selectedHubIds.clear(); targetRotX = null; targetRotY = null; autoRotate = true;
-      hideContentPanel(); updateNavBar();
-    }
+    miniTip.classList.remove("visible");
+    if (selectedHubIds.size > 0 && !activePath) { selectedHubIds.clear(); targetRotX = null; targetRotY = null; autoRotate = true; hideContentPanel(); setActiveNav("all"); }
     return;
   }
   const { data } = hit.userData;
-  if (hit.userData.isHub) {
-    selectHub(data.id);
-    return;
-  }
-  if (data.url) window.open(data.url, '_blank');
-  else showMiniTip(data, clientX, clientY);
+  if (hit.userData.isHub) { selectHub(data.id); return; }
+  showMiniTip(data, clientX, clientY);
 }
 
-// Mouse
-container.addEventListener('mousedown', e => {
-  mouseIsDown = true; isDragging = false;
-  dragStartX = lastMouseX = e.clientX; dragStartY = lastMouseY = e.clientY;
-  if (e.button !== 2) autoRotate = false;
-});
-container.addEventListener('mousemove', e => {
-  if (mouseIsDown && e.button !== 2) {
-    const dx = e.clientX - lastMouseX, dy = e.clientY - lastMouseY;
-    if (!isDragging && (Math.abs(e.clientX - dragStartX) > 4 || Math.abs(e.clientY - dragStartY) > 4)) isDragging = true;
-    if (isDragging) {
-      rotY += dx * 0.010; rotX += dy * 0.010;
-      rotX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotX));
-      container.style.cursor = 'grabbing'; lastMouseX = e.clientX; lastMouseY = e.clientY;
-      if (hoveredMesh) { hoveredMesh.material = hoveredMesh.userData.originalMat; hoveredMesh = null; }
-      targetRotX = null; targetRotY = null;
-      return;
-    }
+container.addEventListener("mousedown", e => { mouseIsDown = true; isDragging = false; dragStartX = lastMouseX = e.clientX; dragStartY = lastMouseY = e.clientY; autoRotate = false; });
+window.addEventListener("mousemove", e => {
+  if (!mouseIsDown) {
+    const hit = getHit(e.clientX, e.clientY);
+    if (hit && hit !== hoveredMesh) { if (hoveredMesh) hoveredMesh.material = hoveredMesh.userData.originalMat; hoveredMesh = hit; hit.material = hoverMat; container.style.cursor = "pointer"; }
+    else if (!hit && hoveredMesh) { hoveredMesh.material = hoveredMesh.userData.originalMat; hoveredMesh = null; container.style.cursor = "grab"; }
+    return;
   }
-  const hit = getHit(e.clientX, e.clientY);
-  if (hit) {
-    if (hoveredMesh !== hit) {
-      if (hoveredMesh) hoveredMesh.material = hoveredMesh.userData.originalMat;
-      hoveredMesh = hit; hoveredMesh.material = hoverMat;
-    }
-    container.style.cursor = 'pointer';
-  } else {
-    if (hoveredMesh) { hoveredMesh.material = hoveredMesh.userData.originalMat; hoveredMesh = null; }
-    container.style.cursor = mouseIsDown ? 'grabbing' : 'grab';
-  }
-});
-window.addEventListener('mouseup', e => {
-  if (e.button === 2) { isRightDragging = false; return; }
-  mouseIsDown = false; container.style.cursor = 'grab';
-  if (!hoveredMesh && !selectedHubId) autoRotate = true;
-});
-container.addEventListener('mouseleave', () => {
-  mouseIsDown = false; isRightDragging = false;
+  const dx = e.clientX - lastMouseX, dy = e.clientY - lastMouseY;
+  if (Math.abs(e.clientX - dragStartX) > DRAG_THRESHOLD || Math.abs(e.clientY - dragStartY) > DRAG_THRESHOLD) isDragging = true;
+  rotY += dx * 0.010; rotX += dy * 0.010;
+  rotX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotX));
+  lastMouseX = e.clientX; lastMouseY = e.clientY; targetRotX = null; targetRotY = null;
   if (hoveredMesh) { hoveredMesh.material = hoveredMesh.userData.originalMat; hoveredMesh = null; }
-  if (!selectedHubId) autoRotate = true;
 });
-container.addEventListener('click', e => {
-  if (isDragging) { isDragging = false; return; }
-  handleClick(e.clientX, e.clientY);
-});
+window.addEventListener("mouseup", e => { if (!isDragging) handleClick(e.clientX, e.clientY); mouseIsDown = false; isDragging = false; if (selectedHubIds.size === 0 && !activePath) autoRotate = true; });
 
-// Pan (right-click)
-let panX = 0, panY = 0;
-let isRightDragging = false, rightLastX = 0, rightLastY = 0;
-function panSpeed() { return camera.position.z * 0.006; }
-
-container.addEventListener('mousedown', e => {
-  if (e.button === 2) { isRightDragging = true; rightLastX = e.clientX; rightLastY = e.clientY; autoRotate = false; e.preventDefault(); }
-}, true);
-container.addEventListener('mousemove', e => {
-  if (!isRightDragging) return;
-  panX += (e.clientX - rightLastX) * panSpeed();
-  panY -= (e.clientY - rightLastY) * panSpeed();
-  rightLastX = e.clientX; rightLastY = e.clientY;
-}, true);
-container.addEventListener('contextmenu', e => e.preventDefault());
-
-// Touch
-let touchStartX = 0, touchStartY = 0, lastTouchX = 0, lastTouchY = 0, isTouchDragging = false;
-let pinchStartDist = 0, pinchStartZ = 0, lastMidX = 0, lastMidY = 0;
-const MIN_Z = 8, MAX_Z = 60;
-
-container.addEventListener('touchstart', e => {
-  if (e.touches.length === 2) {
-    const dx = e.touches[0].clientX - e.touches[1].clientX, dy = e.touches[0].clientY - e.touches[1].clientY;
-    pinchStartDist = Math.hypot(dx, dy); pinchStartZ = camera.position.z;
-    lastMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-    lastMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-    autoRotate = false; e.preventDefault(); return;
-  }
-  const t = e.touches[0];
-  touchStartX = lastTouchX = t.clientX; touchStartY = lastTouchY = t.clientY;
-  isTouchDragging = false; autoRotate = false; e.preventDefault();
-}, { passive: false });
-
-container.addEventListener('touchmove', e => {
-  if (e.touches.length === 2) {
-    const dx = e.touches[0].clientX - e.touches[1].clientX, dy = e.touches[0].clientY - e.touches[1].clientY;
-    camera.position.z = Math.max(MIN_Z, Math.min(MAX_Z, pinchStartZ * (pinchStartDist / Math.hypot(dx, dy))));
-    const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-    const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-    panX += (midX - lastMidX) * panSpeed(); panY -= (midY - lastMidY) * panSpeed();
-    lastMidX = midX; lastMidY = midY; e.preventDefault(); return;
-  }
-  const t = e.touches[0], dx = t.clientX - lastTouchX, dy = t.clientY - lastTouchY;
-  if (!isTouchDragging && (Math.abs(t.clientX - touchStartX) > 4 || Math.abs(t.clientY - touchStartY) > 4)) isTouchDragging = true;
-  if (isTouchDragging) {
-    rotY += dx * 0.010; rotX += dy * 0.010;
-    rotX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotX));
-    lastTouchX = t.clientX; lastTouchY = t.clientY;
-    targetRotX = null; targetRotY = null;
-    if (hoveredMesh) { hoveredMesh.material = hoveredMesh.userData.originalMat; hoveredMesh = null; }
-  }
-  e.preventDefault();
-}, { passive: false });
-
-container.addEventListener('touchend', e => {
-  if (!isTouchDragging) { const t = e.changedTouches[0]; handleClick(t.clientX, t.clientY); }
-  isTouchDragging = false;
-  if (!selectedHubId) autoRotate = true;
-}, { passive: true });
-
-window.addEventListener('wheel', e => {
+window.addEventListener("wheel", e => {
+  if (e.target.closest("#content-panel")) return;
   const d = e.deltaMode === 1 ? e.deltaY * 30 : e.deltaMode === 2 ? e.deltaY * 600 : e.deltaY;
   camera.position.z = Math.max(MIN_Z, Math.min(MAX_Z, camera.position.z + d * 0.05));
   e.preventDefault();
 }, { passive: false });
 
-// ── DEPTH FADE + SPOTLIGHT ────────────────────────────────────────────────────
+// ── TOUCH HANDLING ────────────────────────────────────────────────────────────
+
+let isTouchDragging = false, lastTouchX = 0, lastTouchY = 0;
+let touchStartX = 0, touchStartY = 0, touchStartedInCanvas = false;
+let lastPinchDist = 0, isPinching = false;
+
+function pinchDist(e) {
+  const dx = e.touches[0].clientX - e.touches[1].clientX;
+  const dy = e.touches[0].clientY - e.touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+function touchTargetInCanvas(touch) { return container.contains(touch.target); }
+
+window.addEventListener("touchstart", e => {
+  const t0 = e.touches[0];
+  touchStartedInCanvas = touchTargetInCanvas(t0);
+  if (!touchStartedInCanvas && e.touches.length < 2) return;
+  e.preventDefault();
+  if (e.touches.length >= 2) {
+    const anyInCanvas = Array.from(e.touches).some(t => touchTargetInCanvas(t));
+    if (!anyInCanvas) return;
+    isPinching = true; isTouchDragging = true; lastPinchDist = pinchDist(e); return;
+  }
+  isPinching = false; isTouchDragging = false;
+  lastTouchX = touchStartX = t0.clientX; lastTouchY = touchStartY = t0.clientY; autoRotate = false;
+}, { passive: false });
+
+window.addEventListener("touchmove", e => {
+  if (!touchStartedInCanvas && !isPinching) return;
+  e.preventDefault();
+  if (e.touches.length >= 2) {
+    isPinching = true; isTouchDragging = true;
+    const dist = pinchDist(e);
+    camera.position.z = Math.max(MIN_Z, Math.min(MAX_Z, camera.position.z + (lastPinchDist - dist) * 0.07));
+    lastPinchDist = dist; return;
+  }
+  if (e.touches.length === 1 && !isPinching) {
+    const t = e.touches[0];
+    if (Math.abs(t.clientX - touchStartX) > DRAG_THRESHOLD || Math.abs(t.clientY - touchStartY) > DRAG_THRESHOLD) isTouchDragging = true;
+    const dx = t.clientX - lastTouchX, dy = t.clientY - lastTouchY;
+    rotY += dx * 0.010; rotX += dy * 0.010;
+    rotX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotX));
+    lastTouchX = t.clientX; lastTouchY = t.clientY; targetRotX = null; targetRotY = null;
+  }
+}, { passive: false });
+
+window.addEventListener("touchend", e => {
+  if (e.touches.length < 2) isPinching = false;
+  if (e.touches.length === 0) {
+    const t = e.changedTouches[0];
+    if (!isTouchDragging && touchStartedInCanvas) handleClick(t.clientX, t.clientY);
+    isTouchDragging = false;
+    if (selectedHubIds.size === 0 && !activePath) autoRotate = true;
+  }
+}, { passive: true });
+
+// ── DEPTH FADE ────────────────────────────────────────────────────────────────
 
 const _wp = new THREE.Vector3();
-
 function updateDepth() {
-  const group = selectedHubId ? hubGroups[selectedHubId] : null;
-
-  // Hide center attooh! label when a hub is spotlighted
-  cLabel.element.style.opacity = selectedHubId ? '0' : '1';
-
+  const hasSel = selectedHubIds.size > 0;
+  cLabel.element.style.opacity = hasSel ? "0" : "1";
+  centerMesh.material.opacity = hasSel ? 0.08 : 1.0;
   allClickable.forEach(({ mesh }) => {
     if (mesh === hoveredMesh) return;
-
     mesh.getWorldPosition(_wp);
-    const t = (_wp.z / SPHERE_R + 1) / 2; // 0=back → 1=front
-
-    if (group) {
-      const isSelected = (mesh === group.hubMesh) || group.childMeshes.includes(mesh);
-      if (isSelected) {
-        mesh.material.opacity = 1.0;
-        if (mesh.userData.labelObj)
-          mesh.userData.labelObj.element.style.opacity = '1';
-      } else {
-        mesh.material.opacity = 0.06;
-        if (mesh.userData.labelObj)
-          mesh.userData.labelObj.element.style.opacity = '0.04';
-      }
+    const t = (_wp.z / SPHERE_R + 1) / 2;
+    if (hasSel) {
+      const show = (mesh.userData.isHub && hasSel && selectedHubIds.has(mesh.userData.data.id)) ||
+                   (!mesh.userData.isHub && selectedHubIds.has(mesh.userData.hubId));
+      mesh.material.opacity = show ? 1.0 : 0.05;
+      if (mesh.userData.labelObj) mesh.userData.labelObj.element.style.opacity = show ? "1" : "0.03";
     } else {
       mesh.material.opacity = 0.15 + t * 0.85;
-      if (mesh.userData.labelObj)
-        mesh.userData.labelObj.element.style.opacity = Math.max(0.08, t * 0.9 + 0.08).toFixed(2);
+      if (mesh.userData.labelObj) mesh.userData.labelObj.element.style.opacity = Math.max(0.08, t * 0.9 + 0.08).toFixed(2);
     }
   });
 }
 
-// ── ROTATION ANIMATION ────────────────────────────────────────────────────────
-
 function updateRotationAnimation() {
   if (targetRotX === null || targetRotY === null) return;
   const LERP = 0.06;
-  rotX += (targetRotX - rotX) * LERP;
-  rotY += (targetRotY - rotY) * LERP;
-  if (Math.abs(rotX - targetRotX) < 0.001 && Math.abs(rotY - targetRotY) < 0.001) {
-    rotX = targetRotX; rotY = targetRotY;
-    targetRotX = null; targetRotY = null;
-  }
+  rotX += (targetRotX - rotX) * LERP; rotY += (targetRotY - rotY) * LERP;
+  if (Math.abs(rotX - targetRotX) < 0.001 && Math.abs(rotY - targetRotY) < 0.001) { rotX = targetRotX; rotY = targetRotY; targetRotX = null; targetRotY = null; }
 }
 
-// ── RESIZE ────────────────────────────────────────────────────────────────────
-
 function onResize() {
-  const w = W(), h = H();
-  if (w === 0 || h === 0) return;
+  const w = W(), h = H(); if (!w || !h) return;
   camera.aspect = w / h; camera.updateProjectionMatrix();
   renderer.setSize(w, h); labelRenderer.setSize(w, h);
 }
-window.addEventListener('resize', onResize);
-setTimeout(onResize, 0);
-window.addEventListener('load', onResize);
-
-// ── ANIMATE ───────────────────────────────────────────────────────────────────
+window.addEventListener("resize", onResize); setTimeout(onResize, 0); window.addEventListener("load", onResize);
 
 const clock = new THREE.Clock();
 function animate() {
   requestAnimationFrame(animate);
   if (autoRotate) rotY -= 0.0025;
   updateRotationAnimation();
-  pivot.rotation.y = rotY;
-  pivot.rotation.x = rotX;
-  pivot.position.x = panX;
-  pivot.position.y = panY;
+  pivot.rotation.y = rotY; pivot.rotation.x = rotX;
   camera.lookAt(0, 0, 0);
-  limeLight.intensity = 2.2 + Math.sin(clock.getElapsedTime() * 1.4) * 0.3;
+  limeLight.intensity = 1.8 + Math.sin(clock.getElapsedTime() * 1.2) * 0.2;
+  darkLight.intensity = 1.3 + Math.sin(clock.getElapsedTime() * 0.9 + 1) * 0.2;
   updateDepth();
   renderer.render(scene, camera);
   labelRenderer.render(scene, camera);
+  // Labels follow sphere surface
+  allClickable.forEach(({ mesh }) => {
+    const el = mesh.userData.labelEl;
+    if (!el) return;
+    const baseT = el.style.transform;
+    if (!baseT) return;
+    const tilt = (Math.sin((mesh.userData.nodePhi || 0) + rotY) * -42).toFixed(1);
+    el.style.transform = `${baseT} perspective(280px) rotateY(${tilt}deg)`;
+  });
+}
+animate();
+
+// ── CONTENT PANEL ─────────────────────────────────────────────────────────────
+
+let currentHubId = null;
+
+function renderContentPanel(hubId) {
+  const data = ATTOOH_CONTENT[hubId];
+  if (!data) { contentPanel.classList.remove("visible"); return; }
+  bubblesVisible = false;
+  document.querySelectorAll(".float-bubble").forEach(b => { b.style.display = "none"; b.classList.remove("fly-away","fade-away"); });
+  document.body.classList.add("panel-open");
+  currentHubId = hubId;
+
+  document.getElementById("cp-step-badge").textContent = data.title;
+  document.getElementById("cp-title").textContent = data.title;
+  document.getElementById("cp-intro").textContent = hubById[hubId]?.tip || "";
+
+  const itemsEl = document.getElementById("cp-items"); itemsEl.innerHTML = "";
+
+  data.items.forEach(item => {
+    const card = document.createElement("div"); card.className = "cp-card";
+    const articlesHtml = item.articles && item.articles.length
+      ? `<div class="cp-articles"><div class="cp-articles-label">Links (${item.articles.length})</div><ul class="cp-article-list">${item.articles.map(a => `<li class="cp-article-item" data-url="${a.url}"><span class="cp-article-dot">›</span><span class="cp-article-title">${a.title}</span></li>`).join("")}</ul></div>` : "";
+    card.innerHTML = `
+      <div class="cp-card-header"><span class="cp-card-icon">${item.icon}</span><div class="cp-card-title">${item.title}</div></div>
+      <div class="cp-card-body">${item.body}</div>
+      ${articlesHtml}`;
+    card.querySelectorAll(".cp-article-item").forEach(li => {
+      li.addEventListener("click", () => { const url = li.dataset.url; if (url) window.open(url, "_blank"); });
+    });
+    itemsEl.appendChild(card);
+  });
+
+  // Book a meeting CTA at bottom of panel
+  const ctaCard = document.createElement("div"); ctaCard.style.padding = "0 0 16px"; ctaCard.style.textAlign = "center";
+  const ctaBtn = document.createElement("button"); ctaBtn.className = "cp-cta-btn";
+  ctaBtn.textContent = "☕ Book a Free Consultation";
+  ctaBtn.addEventListener("click", () => window.open(CTA, "_blank"));
+  ctaCard.appendChild(ctaBtn); itemsEl.appendChild(ctaCard);
+
+  contentPanel.classList.add("visible");
 }
 
-animate();
+function hideContentPanel() {
+  contentPanel.classList.remove("visible");
+  document.body.classList.remove("panel-open");
+}
+
+document.getElementById("cp-admin-toggle").addEventListener("change", e => {
+  document.body.classList.toggle("admin-mode", e.target.checked);
+  if (currentHubId) renderContentPanel(currentHubId);
+});
+
 </script>
 </body>
 </html>
