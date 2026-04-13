@@ -108,7 +108,6 @@
     padding: 3px 10px; border-radius: 20px;
     white-space: nowrap; transition: opacity 0.25s; letter-spacing: 0.1px;
     pointer-events: auto; cursor: pointer;
-    will-change: transform;
   }
   .node-label.hub-a   { color: #2a4e00; background: rgba(255,255,255,0.95); border: 1.5px solid rgba(156,211,30,0.70); box-shadow: 0 2px 6px rgba(0,0,0,0.10); }
   .node-label.hub-b   { color: #1a3000; background: rgba(255,255,255,0.95); border: 1.5px solid rgba(58,96,0,0.55); box-shadow: 0 2px 6px rgba(0,0,0,0.10); }
@@ -1270,15 +1269,6 @@ function animate() {
   updateDepth();
   renderer.render(scene, camera);
   labelRenderer.render(scene, camera);
-  // Labels follow sphere surface
-  allClickable.forEach(({ mesh }) => {
-    const el = mesh.userData.labelEl;
-    if (!el) return;
-    const baseT = el.style.transform;
-    if (!baseT) return;
-    const tilt = (Math.sin((mesh.userData.nodePhi || 0) + rotY) * -42).toFixed(1);
-    el.style.transform = `${baseT} perspective(280px) rotateY(${tilt}deg)`;
-  });
 }
 animate();
 
