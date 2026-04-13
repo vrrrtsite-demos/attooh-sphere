@@ -154,19 +154,6 @@
     #logo-pin { padding: 0 8px; }
     #logo-pin .logo-text { font-size: 18px; }
 
-    /* Bubbles: stack in 2 columns below the header */
-    .float-bubble {
-      font-size: 11px !important;
-      padding: 7px 11px !important;
-      border-radius: 20px !important;
-      animation: none !important;
-      transform: none !important;
-    }
-    .float-bubble[data-path="protect"]  { left: 4% !important;  top: 60px !important;  right: auto !important; }
-    .float-bubble[data-path="grow"]     { right: 4% !important; top: 60px !important;  left: auto !important;  }
-    .float-bubble[data-path="business"] { left: 4% !important;  top: 108px !important; right: auto !important; }
-    .float-bubble[data-path="starter"]  { right: 4% !important; top: 108px !important; left: auto !important;  }
-    .float-bubble[data-path="discover"] { left: 50% !important; top: 156px !important; transform: translateX(-50%) !important; right: auto !important; }
   }
 
   .float-bubble {
@@ -188,8 +175,10 @@
   .float-bubble[data-path="starter"]  { background: rgba(156,211,30,0.88); animation-delay: 0.9s; color: #1a3000; }
   .float-bubble[data-path="discover"] { background: rgba(26,48,0,0.88);    animation-delay: 1.2s; color: #fff; }
 
+  .float-bubble { opacity: 0; pointer-events: none; transition: opacity 0.7s ease; animation: none; }
+  .float-bubble.bubble-active { opacity: 1; pointer-events: auto; animation: floatBob 3s ease-in-out infinite; }
   @keyframes floatBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
-  .float-bubble.fly-away { animation: flyUp 0.45s ease-in forwards !important; }
+  .float-bubble.fly-away { opacity: 0 !important; animation: flyUp 0.45s ease-in forwards !important; pointer-events: none !important; }
   .float-bubble.fade-away { animation: fadeSlow 1.8s ease forwards !important; pointer-events: none; }
   @keyframes flyUp { 0% { opacity:1; transform:translateY(0) scale(1); } 100% { opacity:0; transform:translateY(-140px) scale(0.7); } }
   @keyframes fadeSlow { 0% { opacity:1; } 40% { opacity:0.6; } 100% { opacity:0; } }
@@ -1083,12 +1072,38 @@ document.getElementById("change-path").addEventListener("click", () => { exitPat
 // ── FLOATING BUBBLES ──────────────────────────────────────────────────────────
 
 let bubblesVisible = true;
+let bubbleCycleTimer = null;
+let bubbleCycleIndex = 0;
+const BUBBLE_INTERVAL = 3500;
+
+function startBubbleCycle() {
+  const bubbles = Array.from(document.querySelectorAll(".float-bubble"));
+  if (!bubbles.length) return;
+  bubbles.forEach(b => b.classList.remove("bubble-active"));
+  bubbles[bubbleCycleIndex % bubbles.length].classList.add("bubble-active");
+  bubbleCycleTimer = setInterval(() => {
+    if (!bubblesVisible) return;
+    bubbles.forEach(b => b.classList.remove("bubble-active"));
+    bubbleCycleIndex = (bubbleCycleIndex + 1) % bubbles.length;
+    bubbles[bubbleCycleIndex].classList.add("bubble-active");
+  }, BUBBLE_INTERVAL);
+}
+
+function stopBubbleCycle() {
+  clearInterval(bubbleCycleTimer);
+  bubbleCycleTimer = null;
+  document.querySelectorAll(".float-bubble").forEach(b => b.classList.remove("bubble-active"));
+}
+
 function showBubbles() {
   bubblesVisible = true;
+  bubbleCycleIndex = 0;
   document.querySelectorAll(".float-bubble").forEach(b => { b.classList.remove("fly-away","fade-away"); b.style.display = ""; });
+  startBubbleCycle();
 }
 function fadeBubblesAway() {
   if (!bubblesVisible) return; bubblesVisible = false;
+  stopBubbleCycle();
   document.querySelectorAll(".float-bubble").forEach(b => {
     b.classList.add("fade-away"); setTimeout(() => { b.style.display = "none"; }, 1900);
   });
@@ -1101,6 +1116,7 @@ function hideBubbles(chosenPath) {
 document.querySelectorAll(".float-bubble").forEach(bubble => {
   bubble.addEventListener("click", () => { hideBubbles(bubble.dataset.path); });
 });
+startBubbleCycle();
 
 navBar.addEventListener("click", e => {
   if (navDragged) return;
@@ -1338,7 +1354,8 @@ function renderContentPanel(hubId) {
   const data = ATTOOH_CONTENT[hubId];
   if (!data) { contentPanel.classList.remove("visible"); return; }
   bubblesVisible = false;
-  document.querySelectorAll(".float-bubble").forEach(b => { b.style.display = "none"; b.classList.remove("fly-away","fade-away"); });
+  stopBubbleCycle();
+  document.querySelectorAll(".float-bubble").forEach(b => { b.style.display = "none"; b.classList.remove("fly-away","fade-away","bubble-active"); });
   document.body.classList.add("panel-open");
   currentHubId = hubId;
 
