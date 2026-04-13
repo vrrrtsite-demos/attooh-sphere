@@ -160,7 +160,6 @@
   .ctrl-dot-b { width: 10px; height: 10px; border-radius: 50%; background: #3a6000; display: inline-block; flex-shrink: 0; margin-left: -4px; }
 
   @media (max-width: 600px) {
-    #hemi-labels { display: none; }
     #controls { gap: 3px; bottom: 14px; }
     .ctrl { font-size: 9px; padding: 4px 7px; gap: 3px; }
     .ctrl-long { display: none; }
@@ -171,66 +170,6 @@
     #change-path::after { content: "←"; font-size: 13px; color: #9cd31e; font-weight: 800; font-family: 'Nunito', sans-serif; }
     .node-label.child-a, .node-label.child-b { display: none; }
   }
-
-  .float-bubble {
-    position: fixed; z-index: 400; cursor: pointer;
-    display: flex; align-items: center; gap: 8px;
-    padding: 10px 18px; border-radius: 30px;
-    font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px;
-    color: #fff; white-space: nowrap; user-select: none;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.18);
-    animation: floatBob 3s ease-in-out infinite;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-  .float-bubble:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 10px 32px rgba(0,0,0,0.22); }
-  .float-bubble .fb-emoji { font-size: 18px; line-height: 1; }
-
-  .float-bubble[data-path="protect"]  { background: rgba(122,170,16,0.90); animation-delay: 0s;   color: #fff; }
-  .float-bubble[data-path="grow"]     { background: rgba(58,96,0,0.88);    animation-delay: 0.6s; color: #fff; }
-  .float-bubble[data-path="business"] { background: rgba(80,122,0,0.90);   animation-delay: 0.3s; color: #fff; }
-  .float-bubble[data-path="starter"]  { background: rgba(156,211,30,0.88); animation-delay: 0.9s; color: #1a3000; }
-  .float-bubble[data-path="discover"] { background: rgba(26,48,0,0.88);    animation-delay: 1.2s; color: #fff; }
-
-  .float-bubble { opacity: 0; pointer-events: none; transition: opacity 0.7s ease; animation: none; }
-  .float-bubble.bubble-active { opacity: 1; pointer-events: auto; animation: floatBob 3s ease-in-out infinite; }
-  @keyframes floatBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
-  .float-bubble.fly-away { opacity: 0 !important; animation: flyUp 0.45s ease-in forwards !important; pointer-events: none !important; }
-  .float-bubble.fade-away { animation: fadeSlow 1.8s ease forwards !important; pointer-events: none; }
-  @keyframes flyUp { 0% { opacity:1; transform:translateY(0) scale(1); } 100% { opacity:0; transform:translateY(-140px) scale(0.7); } }
-  @keyframes fadeSlow { 0% { opacity:1; } 40% { opacity:0.6; } 100% { opacity:0; } }
-
-  #path-guide {
-    display: none;
-    position: fixed; bottom: 54px; left: 20px; z-index: 300;
-    background: rgba(20,40,10,0.94); border-radius: 18px;
-    padding: 14px 20px; min-width: 280px; max-width: 360px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.40);
-    border: 1.5px solid rgba(156,211,30,0.20);
-    text-align: center;
-  }
-  #path-guide.visible { display: block; animation: tipIn 0.3s ease; }
-  #pg-exit { position: absolute; top: 10px; right: 14px; font-size: 10px; color: rgba(255,255,255,0.35); cursor: pointer; font-weight: 700; }
-  #pg-exit:hover { color: rgba(255,255,255,0.7); }
-  #pg-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--path-color, #9cd31e); margin-bottom: 6px; font-family: 'Nunito', sans-serif; }
-  #pg-step  { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 10px; font-family: 'Nunito', sans-serif; line-height: 1.3; }
-  #pg-dots  { display: flex; gap: 6px; justify-content: center; margin-bottom: 12px; }
-  .pg-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.20); transition: all 0.2s; }
-  .pg-dot.done   { background: var(--path-color, #9cd31e); opacity: 0.6; }
-  .pg-dot.active { background: var(--path-color, #9cd31e); transform: scale(1.35); }
-  #pg-nav { display: flex; gap: 10px; justify-content: center; }
-  #pg-nav button { font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 800; padding: 7px 18px; border-radius: 20px; border: none; cursor: pointer; transition: all 0.15s; }
-  #pg-back { background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.6); }
-  #pg-back:hover { background: rgba(255,255,255,0.18); color: #fff; }
-  #pg-next { background: var(--path-color, #9cd31e); color: #1a3000; box-shadow: 0 2px 10px rgba(0,0,0,0.25); }
-  #pg-next:hover { opacity: 0.88; }
-
-  #hemi-labels {
-    position: fixed; left: 18px; top: 50%; transform: translateY(-50%);
-    display: none; flex-direction: column; gap: 8px; z-index: 100; pointer-events: none;
-  }
-  .hemi-tag { font-family: 'Nunito', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
-  .hemi-tag.a { background: rgba(156,211,30,0.12); color: #3a6000; border: 1px solid rgba(156,211,30,0.35); }
-  .hemi-tag.b { background: rgba(58,96,0,0.10); color: #3a6000; border: 1px solid rgba(58,96,0,0.25); }
 
   #content-panel {
     position: fixed; top: 52px; right: 0; bottom: 44px;
@@ -277,7 +216,6 @@
 
   body.path-active.panel-open #cp-path-bar { display: flex; }
   body.path-active.panel-open #cp-inner { top: 46px; }
-  body.panel-open #path-guide { display: none !important; }
 
   #cp-inner {
     position: absolute; top: 0; left: 0; right: 0; bottom: 40px;
@@ -337,18 +275,6 @@
   @media (max-width: 860px) {
     #content-panel { width: 100%; top: 52px; bottom: 44px; }
     #cp-admin-bar { position: sticky; bottom: 0; }
-    #path-guide {
-      left: 0; right: 0; bottom: 44px; border-radius: 0;
-      max-width: 100%; min-width: 100%; box-sizing: border-box; padding: 8px 14px;
-    }
-    #path-guide.visible { display: flex; flex-direction: row; align-items: center; gap: 8px; }
-    #pg-label { display: none; }
-    #pg-dots  { display: none; }
-    #pg-step  { font-size: 12px; margin: 0; flex: 1; line-height: 1.3; }
-    #pg-exit  { position: static; font-size: 10px; flex-shrink: 0; order: -1; }
-    #pg-nav   { flex-direction: row; gap: 6px; margin: 0; flex-shrink: 0; }
-    #pg-nav button { padding: 5px 14px; font-size: 11px; }
-    body.path-active:not(.panel-open) #content-panel { bottom: 96px; }
     #cpb-label { display: none; }
     #cpb-cta   { display: none; }
     #cpb-back  { padding: 5px 10px; font-size: 10px; }
@@ -370,11 +296,6 @@
   <div id="change-path" title="Choose a different guide">← My Guide</div>
 </div>
 
-<div id="hemi-labels">
-  <div class="hemi-tag a">▲ Our Services</div>
-  <div class="hemi-tag b">▼ Our Story</div>
-</div>
-
 <div id="canvas-container"></div>
 
 <div id="mini-tip">
@@ -385,12 +306,6 @@
     <div id="mt-action"></div>
   </div>
 </div>
-
-<div class="float-bubble" data-path="protect"  style="left:8%;   top:36%"><span class="fb-emoji">🛡️</span> Protect My Life</div>
-<div class="float-bubble" data-path="grow"      style="left:35%; top:20%"><span class="fb-emoji">📈</span> Grow My Wealth</div>
-<div class="float-bubble" data-path="business"  style="left:8%;  top:58%"><span class="fb-emoji">🏢</span> I'm a Business Owner</div>
-<div class="float-bubble" data-path="starter"   style="right:8%; top:58%"><span class="fb-emoji">🌱</span> Just Starting Out</div>
-<div class="float-bubble" data-path="discover"  style="right:8%; top:36%"><span class="fb-emoji">🏅</span> About attooh!</div>
 
 <div id="content-panel">
   <div id="cp-resize-handle"></div>
@@ -422,21 +337,9 @@
 <div id="bottom-bar"><div id="bottom-scroll"></div></div>
 
 <div id="controls">
-  <div class="ctrl"><span class="ctrl-icon">🫧</span> <span class="ctrl-long">Tap a bubble to start a guide</span></div>
   <div class="ctrl"><span class="ctrl-icon">👆</span> <span class="ctrl-long">Drag to spin</span></div>
   <div class="ctrl"><span class="ctrl-icon">🔍</span> <span class="ctrl-long">Scroll to zoom</span></div>
   <div class="ctrl"><span class="ctrl-dot-a"></span><span class="ctrl-dot-b"></span> <span class="ctrl-long">Tap any node to read</span></div>
-</div>
-
-<div id="path-guide">
-  <div id="pg-exit">✕ Exit guide</div>
-  <div id="pg-label"></div>
-  <div id="pg-step"></div>
-  <div id="pg-dots"></div>
-  <div id="pg-nav">
-    <button id="pg-back">← Back</button>
-    <button id="pg-next">Next →</button>
-  </div>
 </div>
 
 <script type="importmap">
@@ -985,18 +888,6 @@ function updatePathGuide() {
   const hubData = hubById[p.hubs[pathStep]];
   const stepText = `Step ${pathStep + 1} of ${p.hubs.length}: ${hubData ? hubData.label : p.hubs[pathStep]}`;
 
-  document.getElementById("path-guide").style.setProperty("--path-color", p.color);
-  document.getElementById("pg-label").textContent = p.label;
-  document.getElementById("pg-step").textContent = stepText;
-  const dots = document.getElementById("pg-dots"); dots.innerHTML = "";
-  p.hubs.forEach((_, i) => {
-    const d = document.createElement("div");
-    d.className = "pg-dot" + (i < pathStep ? " done" : i === pathStep ? " active" : "");
-    dots.appendChild(d);
-  });
-  document.getElementById("pg-back").style.display = pathStep === 0 ? "none" : "";
-  document.getElementById("pg-next").textContent = isLast ? "Finish ✓" : "Next →";
-
   document.getElementById("cp-path-bar").style.setProperty("--pb-color", p.color);
   document.getElementById("cp-path-bar").style.setProperty("--pb-text", p.textColor || "#fff");
   document.getElementById("cpb-label").textContent = p.label;
@@ -1020,10 +911,9 @@ function applyPathStep() {
 function activatePath(pathKey) {
   activePath = pathKey; pathStep = 0;
   if (window.SphereAnalytics) window.SphereAnalytics.track('path_started', { path: pathKey, path_label: PATHS[pathKey]?.label || pathKey });
-  stopNavCarousel(); fadeBubblesAway();
+  stopNavCarousel();
   const p = PATHS[pathKey];
   drawPathLines(p.hubs, p.color);
-  document.getElementById("path-guide").classList.add("visible");
   document.getElementById("controls").style.display = "none";
   document.body.classList.add("path-active");
   applyPathStep();
@@ -1035,19 +925,12 @@ function exitPath() {
   activePath = null; pathStep = 0;
   selectedHubIds.clear(); hideContentPanel(); clearPathLines();
   targetRotX = null; targetRotY = null; autoRotate = true;
-  document.getElementById("path-guide").classList.remove("visible");
   document.getElementById("controls").style.display = "";
   document.body.classList.remove("path-active");
   setActivePathPill(null); setActiveNav("all");
   startNavCarousel();
 }
 
-document.getElementById("pg-exit").addEventListener("click", exitPath);
-document.getElementById("pg-back").addEventListener("click", () => { if (pathStep > 0) { pathStep--; applyPathStep(); } });
-document.getElementById("pg-next").addEventListener("click", () => {
-  if (!activePath) return;
-  if (pathStep < PATHS[activePath].hubs.length - 1) { pathStep++; applyPathStep(); } else exitPath();
-});
 document.getElementById("cpb-back").addEventListener("click", () => { if (pathStep > 0) { pathStep--; applyPathStep(); } });
 document.getElementById("cpb-next").addEventListener("click", () => {
   if (!activePath) return;
@@ -1061,7 +944,7 @@ document.getElementById("cpb-close").addEventListener("click", exitPath);
 
 function selectHub(hubId) {
   if (activePath) return;
-  fadeBubblesAway(); stopNavCarousel();
+  stopNavCarousel();
   if (hubId === "all" || (selectedHubIds.size === 1 && selectedHubIds.has(hubId))) {
     selectedHubIds.clear(); targetRotX = null; targetRotY = null;
     autoRotate = true; setActiveNav("all"); hideContentPanel(); startNavCarousel(); return;
@@ -1094,54 +977,6 @@ window.addEventListener("mousemove", e => {
 });
 window.addEventListener("mouseup", () => { if (isResizing) { isResizing = false; resizeHandle.classList.remove("dragging"); } });
 document.getElementById("change-path").addEventListener("click", () => { exitPath(); });
-
-// ── FLOATING BUBBLES ──────────────────────────────────────────────────────────
-
-let bubblesVisible = true;
-let bubbleCycleTimer = null;
-let bubbleCycleIndex = 0;
-const BUBBLE_INTERVAL = 3500;
-
-function startBubbleCycle() {
-  const bubbles = Array.from(document.querySelectorAll(".float-bubble"));
-  if (!bubbles.length) return;
-  bubbles.forEach(b => b.classList.remove("bubble-active"));
-  bubbles[bubbleCycleIndex % bubbles.length].classList.add("bubble-active");
-  bubbleCycleTimer = setInterval(() => {
-    if (!bubblesVisible) return;
-    bubbles.forEach(b => b.classList.remove("bubble-active"));
-    bubbleCycleIndex = (bubbleCycleIndex + 1) % bubbles.length;
-    bubbles[bubbleCycleIndex].classList.add("bubble-active");
-  }, BUBBLE_INTERVAL);
-}
-
-function stopBubbleCycle() {
-  clearInterval(bubbleCycleTimer);
-  bubbleCycleTimer = null;
-  document.querySelectorAll(".float-bubble").forEach(b => b.classList.remove("bubble-active"));
-}
-
-function showBubbles() {
-  bubblesVisible = true;
-  bubbleCycleIndex = 0;
-  document.querySelectorAll(".float-bubble").forEach(b => { b.classList.remove("fly-away","fade-away"); b.style.display = ""; });
-  startBubbleCycle();
-}
-function fadeBubblesAway() {
-  if (!bubblesVisible) return; bubblesVisible = false;
-  stopBubbleCycle();
-  document.querySelectorAll(".float-bubble").forEach(b => {
-    b.classList.add("fade-away"); setTimeout(() => { b.style.display = "none"; }, 1900);
-  });
-}
-function hideBubbles(chosenPath) {
-  const bubbles = document.querySelectorAll(".float-bubble");
-  bubbles.forEach(b => b.classList.add("fly-away"));
-  setTimeout(() => { bubbles.forEach(b => { b.style.display = "none"; }); activatePath(chosenPath); }, 420);
-}
-document.querySelectorAll(".float-bubble").forEach(bubble => {
-  bubble.addEventListener("click", () => { hideBubbles(bubble.dataset.path); });
-});
 
 // ── NAV CAROUSEL ─────────────────────────────────────────────────────────────
 
@@ -1213,7 +1048,7 @@ bottomScroll.addEventListener("wheel", e => { e.preventDefault(); bottomScroll.s
 bottomScroll.addEventListener("click", e => {
   if (bottomDragged) return;
   const pill = e.target.closest(".nav-pill");
-  if (!pill) return; fadeBubblesAway(); selectHub(pill.dataset.id);
+  if (!pill) return; selectHub(pill.dataset.id);
 });
 
 let navDragging = false, navDragged = false, navStartX = 0, navScrollStart = 0;
@@ -1432,9 +1267,6 @@ let currentHubId = null;
 function renderContentPanel(hubId) {
   const data = ATTOOH_CONTENT[hubId];
   if (!data) { contentPanel.classList.remove("visible"); return; }
-  bubblesVisible = false;
-  stopBubbleCycle();
-  document.querySelectorAll(".float-bubble").forEach(b => { b.style.display = "none"; b.classList.remove("fly-away","fade-away","bubble-active"); });
   document.body.classList.add("panel-open");
   currentHubId = hubId;
 
