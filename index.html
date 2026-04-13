@@ -249,8 +249,10 @@
   }
   #cpb-back { background: #f0f0f0; color: #666; }
   #cpb-back:hover { background: #e0e0e0; }
-  #cpb-next { background: var(--pb-color, #9cd31e); color: #1a3000; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+  #cpb-next { background: var(--pb-color, #9cd31e); color: var(--pb-text, #1a3000); box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
   #cpb-next:hover { opacity: 0.88; }
+  #cpb-cta { background: #9cd31e; color: #1a3000; font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800; padding: 5px 13px; border-radius: 20px; border: none; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all 0.15s; }
+  #cpb-cta:hover { background: #7aaa10; }
 
   body.path-active.panel-open #cp-path-bar { display: flex; }
   body.path-active.panel-open #cp-inner { top: 46px; }
@@ -372,6 +374,7 @@
       <span id="cpb-label"></span>
       <span id="cpb-step"></span>
     </div>
+    <button id="cpb-cta">☕ Book</button>
     <button id="cpb-next">Next →</button>
   </div>
   <div id="cp-inner">
@@ -910,11 +913,11 @@ rungHubs.forEach(([ai, bi]) => {
 // ── PATH DEFINITIONS ──────────────────────────────────────────────────────────
 
 const PATHS = {
-  protect:  { label: "Protect My Life",     color: "#7aaa10", hubs: ["insurance", "health",     "estate",    "business"  ] },
-  grow:     { label: "Grow My Wealth",      color: "#3a6000", hubs: ["wealth",    "retirement", "employee",  "education" ] },
-  business: { label: "I'm a Business Owner",color: "#507a00", hubs: ["business",  "employee",   "estate",    "retirement"] },
-  starter:  { label: "Just Starting Out",   color: "#7aaa10", hubs: ["education", "insurance",  "health",    "wealth"    ] },
-  discover: { label: "About attooh!",       color: "#1a3000", hubs: ["brand",     "team",       "story",     "values"    ] },
+  protect:  { label: "Protect My Life",     color: "#7aaa10", textColor: "#fff",    hubs: ["insurance", "health",     "estate",    "business"  ] },
+  grow:     { label: "Grow My Wealth",      color: "#3a6000", textColor: "#fff",    hubs: ["wealth",    "retirement", "employee",  "education" ] },
+  business: { label: "I'm a Business Owner",color: "#507a00", textColor: "#fff",    hubs: ["business",  "employee",   "estate",    "retirement"] },
+  starter:  { label: "Just Starting Out",   color: "#7aaa10", textColor: "#fff",    hubs: ["education", "insurance",  "health",    "wealth"    ] },
+  discover: { label: "About attooh!",       color: "#1a3000", textColor: "#9cd31e", hubs: ["brand",     "team",       "story",     "values"    ] },
 };
 
 // ── SELECTION STATE ───────────────────────────────────────────────────────────
@@ -968,11 +971,13 @@ function updatePathGuide() {
   document.getElementById("pg-next").textContent = isLast ? "Finish ✓" : "Next →";
 
   document.getElementById("cp-path-bar").style.setProperty("--pb-color", p.color);
+  document.getElementById("cp-path-bar").style.setProperty("--pb-text", p.textColor || "#fff");
   document.getElementById("cpb-label").textContent = p.label;
   document.getElementById("cpb-step").textContent = stepText;
   document.getElementById("cpb-back").style.display = pathStep === 0 ? "none" : "";
   document.getElementById("cpb-next").textContent = isLast ? "Finish ✓" : "Next →";
   document.getElementById("cpb-next").style.background = isLast ? "#27ae60" : p.color;
+  document.getElementById("cpb-next").style.color = isLast ? "#fff" : (p.textColor || "#fff");
 }
 
 function applyPathStep() {
@@ -1019,6 +1024,10 @@ document.getElementById("cpb-back").addEventListener("click", () => { if (pathSt
 document.getElementById("cpb-next").addEventListener("click", () => {
   if (!activePath) return;
   if (pathStep < PATHS[activePath].hubs.length - 1) { pathStep++; applyPathStep(); } else exitPath();
+});
+document.getElementById("cpb-cta").addEventListener("click", () => {
+  if (window.SphereAnalytics) window.SphereAnalytics.track('cta_clicked', { cta: 'coffee-date', context: 'path-bar', path: activePath });
+  window.open(CTA, "_blank");
 });
 
 function selectHub(hubId) {
