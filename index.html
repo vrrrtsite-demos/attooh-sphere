@@ -153,6 +153,20 @@
     .ctrl-long { display: none; }
     #logo-pin { padding: 0 8px; }
     #logo-pin .logo-text { font-size: 18px; }
+
+    /* Bubbles: stack in 2 columns below the header */
+    .float-bubble {
+      font-size: 11px !important;
+      padding: 7px 11px !important;
+      border-radius: 20px !important;
+      animation: none !important;
+      transform: none !important;
+    }
+    .float-bubble[data-path="protect"]  { left: 4% !important;  top: 60px !important;  right: auto !important; }
+    .float-bubble[data-path="grow"]     { right: 4% !important; top: 60px !important;  left: auto !important;  }
+    .float-bubble[data-path="business"] { left: 4% !important;  top: 108px !important; right: auto !important; }
+    .float-bubble[data-path="starter"]  { right: 4% !important; top: 108px !important; left: auto !important;  }
+    .float-bubble[data-path="discover"] { left: 50% !important; top: 156px !important; transform: translateX(-50%) !important; right: auto !important; }
   }
 
   .float-bubble {
