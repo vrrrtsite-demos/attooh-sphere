@@ -272,6 +272,8 @@
   #cpb-next:hover { opacity: 0.88; }
   #cpb-cta { background: #9cd31e; color: #1a3000; font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800; padding: 5px 13px; border-radius: 20px; border: none; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all 0.15s; }
   #cpb-cta:hover { background: #7aaa10; }
+  #cpb-close { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; padding: 4px 9px; border-radius: 50%; border: none; cursor: pointer; background: #f0f0f0; color: #999; flex-shrink: 0; transition: all 0.15s; line-height: 1; }
+  #cpb-close:hover { background: #e0e0e0; color: #444; }
 
   body.path-active.panel-open #cp-path-bar { display: flex; }
   body.path-active.panel-open #cp-inner { top: 46px; }
@@ -347,6 +349,11 @@
     #pg-nav   { flex-direction: row; gap: 6px; margin: 0; flex-shrink: 0; }
     #pg-nav button { padding: 5px 14px; font-size: 11px; }
     body.path-active:not(.panel-open) #content-panel { bottom: 96px; }
+    #cpb-label { display: none; }
+    #cpb-cta   { display: none; }
+    #cpb-back  { padding: 5px 10px; font-size: 10px; }
+    #cpb-step  { font-size: 11px; }
+    #cp-path-bar { gap: 6px; padding: 0 8px; }
   }
 </style>
 </head>
@@ -395,6 +402,7 @@
     </div>
     <button id="cpb-cta">☕ Book</button>
     <button id="cpb-next">Next →</button>
+    <button id="cpb-close">✕</button>
   </div>
   <div id="cp-inner">
     <div id="cp-step-badge"></div>
@@ -1049,6 +1057,7 @@ document.getElementById("cpb-cta").addEventListener("click", () => {
   if (window.SphereAnalytics) window.SphereAnalytics.track('cta_clicked', { cta: 'coffee-date', context: 'path-bar', path: activePath });
   window.open(CTA, "_blank");
 });
+document.getElementById("cpb-close").addEventListener("click", exitPath);
 
 function selectHub(hubId) {
   if (activePath) return;
