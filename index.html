@@ -10,10 +10,10 @@
   Developed by Jakes Schoeman. All rights reserved.
   Unauthorised reproduction or reuse prohibited.
 -->
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #fff; font-family: 'Nunito', sans-serif; overflow: hidden; height: 100vh; width: 100vw; }
+  body { background: #fff; font-family: 'Lato', sans-serif; overflow: hidden; height: 100vh; width: 100vw; }
 
   #header {
     position: fixed; top: 0; left: 0; right: 0; z-index: 200;
@@ -25,7 +25,7 @@
     display: flex; align-items: center;
     font-size: 11px; font-weight: 800; color: #9cd31e;
     cursor: pointer; border-left: 1px solid #eee;
-    white-space: nowrap; font-family: 'Nunito', sans-serif;
+    white-space: nowrap; font-family: 'Lato', sans-serif;
     transition: background 0.15s;
   }
   #change-path:hover { background: rgba(156,211,30,0.07); }
@@ -55,7 +55,7 @@
 
   .nav-pill {
     flex-shrink: 0; cursor: pointer; white-space: nowrap;
-    font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 800;
+    font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 800;
     padding: 4px 12px; border-radius: 20px; border: 1.5px solid transparent;
     transition: all 0.18s ease; letter-spacing: 0.1px; user-select: none;
   }
@@ -81,7 +81,7 @@
 
   .nav-cta {
     flex-shrink: 0; cursor: pointer; white-space: nowrap;
-    font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 800;
+    font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 800;
     padding: 5px 14px; border-radius: 20px; letter-spacing: 0.1px; user-select: none;
     background: #9cd31e; color: #1a3000; border: none; transition: all 0.18s ease;
   }
@@ -104,7 +104,7 @@
   #canvas-container { position: fixed; top: 52px; left: 0; right: 0; bottom: 0; cursor: grab; }
 
   .node-label {
-    font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800;
+    font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
     padding: 3px 10px; border-radius: 20px;
     white-space: nowrap; transition: opacity 0.25s; letter-spacing: 0.1px;
     pointer-events: auto; cursor: pointer;
@@ -124,7 +124,7 @@
   #mini-tip.visible { display: block; animation: tipIn 0.18s ease; }
   @keyframes tipIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
   #mt-content { padding: 14px 16px; }
-  #mt-label  { font-size: 12px; font-weight: 800; color: #9cd31e; margin-bottom: 5px; font-family: 'Nunito', sans-serif; }
+  #mt-label  { font-size: 12px; font-weight: 800; color: #9cd31e; margin-bottom: 5px; font-family: 'Lato', sans-serif; }
   #mt-body   { font-size: 11px; color: rgba(255,255,255,0.82); line-height: 1.6; }
   #mt-action { font-size: 10px; color: #c8f040; margin-top: 8px; font-weight: 800; cursor: pointer; }
   #mt-close  { position: absolute; top: 8px; right: 10px; color: rgba(255,255,255,0.5); font-size: 16px; cursor: pointer; line-height: 1; z-index: 1; }
@@ -136,7 +136,7 @@
   .ctrl {
     background: rgba(255,255,255,0.92); border: 1px solid #e0e0e0; border-radius: 20px;
     padding: 5px 12px; display: flex; align-items: center; gap: 6px;
-    font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 700;
+    font-family: 'Lato', sans-serif; font-size: 10px; font-weight: 700;
     color: #555; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
   .ctrl-icon { font-size: 13px; line-height: 1; }
@@ -156,7 +156,7 @@
     position: fixed; z-index: 400; cursor: pointer;
     display: flex; align-items: center; gap: 8px;
     padding: 10px 18px; border-radius: 30px;
-    font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px;
+    font-family: 'Lato', sans-serif; font-weight: 800; font-size: 13px;
     color: #fff; white-space: nowrap; user-select: none;
     box-shadow: 0 6px 24px rgba(0,0,0,0.18);
     animation: floatBob 3s ease-in-out infinite;
@@ -187,14 +187,14 @@
   #path-guide.visible { display: block; animation: tipIn 0.3s ease; }
   #pg-exit { position: absolute; top: 10px; right: 14px; font-size: 10px; color: rgba(255,255,255,0.35); cursor: pointer; font-weight: 700; }
   #pg-exit:hover { color: rgba(255,255,255,0.7); }
-  #pg-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--path-color, #9cd31e); margin-bottom: 6px; font-family: 'Nunito', sans-serif; }
-  #pg-step  { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 10px; font-family: 'Nunito', sans-serif; line-height: 1.3; }
+  #pg-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--path-color, #9cd31e); margin-bottom: 6px; font-family: 'Lato', sans-serif; }
+  #pg-step  { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 10px; font-family: 'Lato', sans-serif; line-height: 1.3; }
   #pg-dots  { display: flex; gap: 6px; justify-content: center; margin-bottom: 12px; }
   .pg-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.20); transition: all 0.2s; }
   .pg-dot.done   { background: var(--path-color, #9cd31e); opacity: 0.6; }
   .pg-dot.active { background: var(--path-color, #9cd31e); transform: scale(1.35); }
   #pg-nav { display: flex; gap: 10px; justify-content: center; }
-  #pg-nav button { font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 800; padding: 7px 18px; border-radius: 20px; border: none; cursor: pointer; transition: all 0.15s; }
+  #pg-nav button { font-family: 'Lato', sans-serif; font-size: 12px; font-weight: 800; padding: 7px 18px; border-radius: 20px; border: none; cursor: pointer; transition: all 0.15s; }
   #pg-back { background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.6); }
   #pg-back:hover { background: rgba(255,255,255,0.18); color: #fff; }
   #pg-next { background: var(--path-color, #9cd31e); color: #1a3000; box-shadow: 0 2px 10px rgba(0,0,0,0.25); }
@@ -204,7 +204,7 @@
     position: fixed; left: 18px; top: 50%; transform: translateY(-50%);
     display: flex; flex-direction: column; gap: 8px; z-index: 100; pointer-events: none;
   }
-  .hemi-tag { font-family: 'Nunito', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
+  .hemi-tag { font-family: 'Lato', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
   .hemi-tag.a { background: rgba(156,211,30,0.12); color: #3a6000; border: 1px solid rgba(156,211,30,0.35); }
   .hemi-tag.b { background: rgba(58,96,0,0.10); color: #3a6000; border: 1px solid rgba(58,96,0,0.25); }
 
@@ -235,10 +235,10 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
   #cpb-info { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; }
-  #cpb-label { font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--pb-color, #9cd31e); font-family: 'Nunito', sans-serif; }
-  #cpb-step  { font-size: 12px; font-weight: 800; color: #222; font-family: 'Nunito', sans-serif; }
+  #cpb-label { font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--pb-color, #9cd31e); font-family: 'Lato', sans-serif; }
+  #cpb-step  { font-size: 12px; font-weight: 800; color: #222; font-family: 'Lato', sans-serif; }
   #cpb-back, #cpb-next {
-    font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800;
+    font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
     padding: 5px 14px; border-radius: 20px; border: none; cursor: pointer;
     transition: all 0.15s; white-space: nowrap; flex-shrink: 0;
   }
@@ -262,31 +262,31 @@
     letter-spacing: 1px; text-transform: uppercase;
     padding: 3px 10px; border-radius: 20px; margin-bottom: 10px;
     background: rgba(156,211,30,0.14); color: #3a6000;
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Lato', sans-serif;
   }
-  #cp-title { font-size: 18px; font-weight: 900; color: #1a1a2e; margin-bottom: 8px; line-height: 1.25; font-family: 'Nunito', sans-serif; }
-  #cp-intro { font-size: 13px; color: #666; line-height: 1.65; margin-bottom: 20px; font-family: 'Nunito', sans-serif; border-left: 3px solid #9cd31e; padding-left: 12px; }
+  #cp-title { font-size: 18px; font-weight: 900; color: #1a1a2e; margin-bottom: 8px; line-height: 1.25; font-family: 'Lato', sans-serif; }
+  #cp-intro { font-size: 13px; color: #666; line-height: 1.65; margin-bottom: 20px; font-family: 'Lato', sans-serif; border-left: 3px solid #9cd31e; padding-left: 12px; }
 
   .cp-card { background: #f9f9f9; border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; position: relative; border: 1px solid #f0f0f0; transition: box-shadow 0.15s; }
   .cp-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
   .cp-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
   .cp-card-icon { font-size: 18px; }
-  .cp-card-title { font-size: 13px; font-weight: 800; color: #1a1a2e; font-family: 'Nunito', sans-serif; }
-  .cp-card-body  { font-size: 12px; color: #555; line-height: 1.65; font-family: 'Nunito', sans-serif; margin-bottom: 8px; }
+  .cp-card-title { font-size: 13px; font-weight: 800; color: #1a1a2e; font-family: 'Lato', sans-serif; }
+  .cp-card-body  { font-size: 12px; color: #555; line-height: 1.65; font-family: 'Lato', sans-serif; margin-bottom: 8px; }
 
   .cp-articles { margin-top: 10px; }
-  .cp-articles-label { font-size: 10px; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-family: 'Nunito', sans-serif; }
+  .cp-articles-label { font-size: 10px; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-family: 'Lato', sans-serif; }
   .cp-article-list { list-style: none; padding: 0; margin: 0; }
   .cp-article-item { display: flex; align-items: baseline; gap: 6px; padding: 4px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
   .cp-article-item:hover .cp-article-title { color: #3a6000; }
   .cp-article-dot { color: #9cd31e; font-size: 14px; flex-shrink: 0; }
-  .cp-article-title { font-size: 12px; color: #444; font-family: 'Nunito', sans-serif; line-height: 1.4; }
+  .cp-article-title { font-size: 12px; color: #444; font-family: 'Lato', sans-serif; line-height: 1.4; }
 
   /* Book a meeting CTA inside panel */
   .cp-cta-btn {
     display: inline-block; margin-top: 8px;
     background: #9cd31e; color: #1a3000;
-    font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800;
+    font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
     padding: 6px 16px; border-radius: 20px; cursor: pointer; border: none;
     transition: all 0.15s;
   }
@@ -298,7 +298,7 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 16px; background: #fafafa;
   }
-  #cp-admin-label { font-size: 11px; color: #aaa; font-family: 'Nunito', sans-serif; font-weight: 700; }
+  #cp-admin-label { font-size: 11px; color: #aaa; font-family: 'Lato', sans-serif; font-weight: 700; }
   .cp-toggle-wrap { position: relative; display: inline-block; width: 36px; height: 20px; }
   .cp-toggle-wrap input { opacity: 0; width: 0; height: 0; }
   .cp-toggle-slider { position: absolute; cursor: pointer; inset: 0; background: #ddd; border-radius: 20px; transition: 0.2s; }
@@ -328,9 +328,8 @@
 
 <div id="header">
   <div id="logo-pin">
-    <a href="https://attooh.co.za" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
-      <span class="logo-text" style="font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;color:#9cd31e;letter-spacing:-0.5px;">attooh!</span>
-      <span style="font-size:9px;font-weight:700;color:#aaa;font-family:'Nunito',sans-serif;letter-spacing:0.5px;text-transform:uppercase;">Financial Services</span>
+    <a href="https://attooh.co.za" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;text-decoration:none;">
+      <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/EnEfD8EkdmRMu6E68Llz/media/872362e7-eb84-43b4-970e-86ba9813aaef.png" alt="attooh!" style="height:38px;width:auto;display:block;object-fit:contain;object-position:left center;max-width:160px;">
     </a>
   </div>
   <div id="nav-wrap"><div id="nav-bar"></div></div>
