@@ -10,8 +10,18 @@
 
   // Capture UTM/source params from URL
   const params = new URLSearchParams(window.location.search);
-  const SOURCE = params.get('src') || 'direct';
+  const SOURCE = params.get('utm_source') || params.get('src') || 'direct';
   const UID = params.get('uid') || null;
+
+  // Referrer — where they actually came from
+  const REFERRER = document.referrer || null;
+  const REFERRER_HOST = REFERRER ? (() => {
+    try { return new URL(REFERRER).hostname.replace(/^www\./, ''); } catch (_) { return null; }
+  })() : null;
+
+  // UTM params
+  const UTM_MEDIUM   = params.get('utm_medium') || null;
+  const UTM_CAMPAIGN = params.get('utm_campaign') || null;
 
   // Stable session ID for this browser tab
   const SESSION_ID = (() => {
@@ -69,8 +79,13 @@
     }
   }
 
-  // Track page view on load
-  track('sphere_viewed');
+  // Track page view on load — include referrer and UTM context
+  track('sphere_viewed', {
+    referrer: REFERRER,
+    referrer_host: REFERRER_HOST,
+    utm_medium: UTM_MEDIUM,
+    utm_campaign: UTM_CAMPAIGN,
+  });
 
   window.SphereAnalytics = { track, identify, sessionId: SESSION_ID };
 })();
