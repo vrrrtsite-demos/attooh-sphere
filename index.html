@@ -166,7 +166,9 @@
     .ctrl-long { display: none; }
     #logo-pin { padding: 0 8px; }
     #logo-pin .logo-text { font-size: 18px; }
-
+    #logo-pin .logo-subtitle { display: none; }
+    #change-path { font-size: 0; padding: 0 10px; min-width: 32px; }
+    #change-path::after { content: "←"; font-size: 13px; color: #9cd31e; font-weight: 800; font-family: 'Nunito', sans-serif; }
   }
 
   .float-bubble {
@@ -353,7 +355,7 @@
   <div id="logo-pin">
     <a href="https://attooh.co.za" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
       <span class="logo-text" style="font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;color:#9cd31e;letter-spacing:-0.5px;">attooh!</span>
-      <span style="font-size:9px;font-weight:700;color:#aaa;font-family:'Nunito',sans-serif;letter-spacing:0.5px;text-transform:uppercase;">Financial Services</span>
+      <span class="logo-subtitle" style="font-size:9px;font-weight:700;color:#aaa;font-family:'Nunito',sans-serif;letter-spacing:0.5px;text-transform:uppercase;">Financial Services</span>
     </a>
   </div>
   <div id="nav-wrap"><div id="nav-bar"></div></div>
@@ -1137,7 +1139,7 @@ let navCarouselTimer = null;
 let navCarouselIndex = 0;
 let navCarouselPaused = false;
 let navCarouselResumeTimer = null;
-const NAV_CAROUSEL_INTERVAL = 2600;
+const NAV_CAROUSEL_INTERVAL = 1800;
 
 function getPathPills() { return Array.from(navBar.querySelectorAll(".nav-pill.path")); }
 
