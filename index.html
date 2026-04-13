@@ -1324,7 +1324,13 @@ function renderContentPanel(hubId) {
       <div class="cp-card-body">${item.body}</div>
       ${articlesHtml}`;
     card.querySelectorAll(".cp-article-item").forEach(li => {
-      li.addEventListener("click", () => { const url = li.dataset.url; if (url) window.open(url, "_blank"); });
+      li.addEventListener("click", () => {
+        const url = li.dataset.url;
+        if (url) {
+          if (window.SphereAnalytics) window.SphereAnalytics.track('article_clicked', { article_title: li.querySelector('.cp-article-title')?.textContent, hub_id: hubId, hub_label: data.title, url });
+          window.open(url, "_blank");
+        }
+      });
     });
     itemsEl.appendChild(card);
   });
@@ -1333,7 +1339,10 @@ function renderContentPanel(hubId) {
   const ctaCard = document.createElement("div"); ctaCard.style.padding = "0 0 16px"; ctaCard.style.textAlign = "center";
   const ctaBtn = document.createElement("button"); ctaBtn.className = "cp-cta-btn";
   ctaBtn.textContent = "☕ Book a Free Consultation";
-  ctaBtn.addEventListener("click", () => window.open(CTA, "_blank"));
+  ctaBtn.addEventListener("click", () => {
+    if (window.SphereAnalytics) window.SphereAnalytics.track('cta_clicked', { cta: 'book-consultation', hub_id: hubId, hub_label: data.title });
+    window.open(CTA, "_blank");
+  });
   ctaCard.appendChild(ctaBtn); itemsEl.appendChild(ctaCard);
 
   contentPanel.classList.add("visible");
