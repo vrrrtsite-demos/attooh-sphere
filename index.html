@@ -103,7 +103,7 @@
   #bottom-scroll::-webkit-scrollbar { display: none; }
   #canvas-container { bottom: 44px; }
 
-  #canvas-container { position: fixed; top: 52px; left: 0; right: 0; bottom: 0; cursor: grab; }
+  #canvas-container { position: fixed; top: 88px; left: 0; right: 0; bottom: 0; cursor: grab; }
 
   .node-label {
     font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 800;
@@ -147,7 +147,6 @@
   .ctrl-dot-b { width: 10px; height: 10px; border-radius: 50%; background: #3a6000; display: inline-block; flex-shrink: 0; margin-left: -4px; }
 
   @media (max-width: 600px) {
-    #hemi-labels { display: none; }
     #controls { gap: 3px; bottom: 14px; }
     .ctrl { font-size: 9px; padding: 4px 7px; gap: 3px; }
     .ctrl-long { display: none; }
@@ -191,16 +190,9 @@
   #pg-next { background: var(--path-color, #9cd31e); color: #1a3000; box-shadow: 0 2px 10px rgba(0,0,0,0.25); }
   #pg-next:hover { opacity: 0.88; }
 
-  #hemi-labels {
-    position: fixed; left: 18px; top: 50%; transform: translateY(-50%);
-    display: flex; flex-direction: column; gap: 8px; z-index: 100; pointer-events: none;
-  }
-  .hemi-tag { font-family: 'Nunito', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
-  .hemi-tag.a { background: rgba(156,211,30,0.12); color: #3a6000; border: 1px solid rgba(156,211,30,0.35); }
-  .hemi-tag.b { background: rgba(58,96,0,0.10); color: #3a6000; border: 1px solid rgba(58,96,0,0.25); }
 
   #content-panel {
-    position: fixed; top: 52px; right: 0; bottom: 44px;
+    position: fixed; top: 88px; right: 0; bottom: 44px;
     width: 380px; z-index: 300;
     background: rgba(255,255,255,0.97);
     border-left: 1px solid #eee;
@@ -317,6 +309,40 @@
     #pg-nav button { padding: 5px 14px; font-size: 11px; }
     body.path-active:not(.panel-open) #content-panel { bottom: 96px; }
   }
+
+  /* ── Mode selector bar ── */
+  #mode-bar {
+    position: fixed; top: 52px; left: 0; right: 0; z-index: 190;
+    height: 36px; background: #fff; border-bottom: 1px solid #e8e8e0;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+  }
+  .mode-btn {
+    font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 800;
+    padding: 4px 14px; border-radius: 20px; border: 1.5px solid #e0e0e0;
+    background: transparent; color: #888; cursor: pointer; letter-spacing: 0.1px;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease; user-select: none;
+  }
+  .mode-btn:hover { background: #f5f5f5; color: #444; }
+  .mode-btn.active { background: rgba(156,211,30,0.12); color: #3a6000; border-color: rgba(156,211,30,0.55); }
+
+  /* Child labels hidden in Navigate and Guide Me modes */
+  body.mode-navigate .node-label.child-a,
+  body.mode-navigate .node-label.child-b,
+  body.mode-guide .node-label.child-a,
+  body.mode-guide .node-label.child-b { display: none; }
+
+  /* Entry-point hub glow in Guide Me mode */
+  @keyframes guidePulse {
+    0%, 100% { box-shadow: 0 0 0 2px rgba(248,158,52,0.5), 0 4px 16px rgba(248,158,52,0.25); border-color: rgba(248,158,52,0.8); }
+    50%       { box-shadow: 0 0 0 5px rgba(248,158,52,0.25), 0 6px 24px rgba(248,158,52,0.40); border-color: rgba(248,158,52,1.0); }
+  }
+  .node-label.guide-entry {
+    animation: guidePulse 1.8s ease-in-out infinite;
+    color: #7A4A00 !important;
+  }
+
+  /* Hide mode bar on mobile — mobile is always Navigate */
+  @media (max-width: 600px) { #mode-bar { display: none; } }
 </style>
 </head>
 <body>
@@ -332,9 +358,10 @@
   <div id="change-path" title="Choose a different guide">← My Guide</div>
 </div>
 
-<div id="hemi-labels">
-  <div class="hemi-tag a">▲ Our Services</div>
-  <div class="hemi-tag b">▼ Our Story</div>
+<div id="mode-bar" role="group" aria-label="View mode">
+  <button class="mode-btn" data-mode="explore" type="button" aria-pressed="false">Explore</button>
+  <button class="mode-btn active" data-mode="navigate" type="button" aria-pressed="true">Navigate</button>
+  <button class="mode-btn" data-mode="guide" type="button" aria-pressed="false">Guide Me</button>
 </div>
 
 <div id="canvas-container"></div>
@@ -903,6 +930,48 @@ const PATHS = {
   discover: { label: "About attooh!",       color: "#1a3000", textColor: "#9cd31e", hubs: ["brand",     "team",       "story",     "values"    ] },
 };
 
+// ── MODE SELECTOR ─────────────────────────────────────────────────────────────
+
+let currentMode = null;
+
+// Maps first hub of each path → path key (for Guide Me entry-point clicks)
+// Derived from PATHS so it stays correct if hub order changes
+const entryHubToPath = Object.fromEntries(
+  Object.entries(PATHS).map(([key, p]) => [p.hubs[0], key])
+);
+
+function setGuideGlows(on) {
+  Object.keys(entryHubToPath).forEach(hubId => {
+    const group = hubGroups[hubId];
+    if (!group) return;
+    const el = group.hubMesh.userData.labelEl;
+    if (!el) return;
+    el.classList.toggle('guide-entry', on);
+  });
+}
+
+function applyMode(mode) {
+  if (currentMode === mode) return;
+  currentMode = mode;
+  // Body classes drive CSS
+  document.body.classList.remove('mode-explore', 'mode-navigate', 'mode-guide');
+  document.body.classList.add('mode-' + mode);
+  // Update button active state and aria-pressed
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    const isActive = btn.dataset.mode === mode;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+  });
+  // Guide Me entry-point glows
+  setGuideGlows(mode === 'guide' && !activePath);
+}
+
+document.getElementById('mode-bar').addEventListener('click', e => {
+  const btn = e.target.closest('.mode-btn');
+  if (!btn || activePath) return;  // block mode switching mid-path
+  applyMode(btn.dataset.mode);
+});
+
 // ── SELECTION STATE ───────────────────────────────────────────────────────────
 
 let activePath = null, pathStep = 0;
@@ -977,6 +1046,7 @@ function activatePath(pathKey) {
   activePath = pathKey; pathStep = 0;
   if (window.SphereAnalytics) window.SphereAnalytics.track('path_started', { path: pathKey, path_label: PATHS[pathKey]?.label || pathKey });
   stopPillSpotlight();
+  setGuideGlows(false);
   const p = PATHS[pathKey];
   drawPathLines(p.hubs, p.color);
   document.getElementById("path-guide").classList.add("visible");
@@ -996,6 +1066,7 @@ function exitPath() {
   document.body.classList.remove("path-active");
   setActivePathPill(null); setActiveNav("all");
   pillSpotIndex = 0; startPillSpotlight();
+  setGuideGlows(currentMode === 'guide');
 }
 
 document.getElementById("pg-exit").addEventListener("click", exitPath);
@@ -1073,6 +1144,7 @@ function stopPillSpotlight() {
   document.querySelectorAll(".nav-pill.path").forEach(p => p.classList.remove("spotlight"));
 }
 startPillSpotlight();
+applyMode('navigate');
 
 navBar.addEventListener("click", e => {
   if (navDragged) return;
@@ -1156,7 +1228,14 @@ function handleClick(clientX, clientY) {
     return;
   }
   const { data } = hit.userData;
-  if (hit.userData.isHub) { selectHub(data.id); return; }
+  if (hit.userData.isHub) {
+    if (currentMode === 'guide' && entryHubToPath[data.id]) {
+      activatePath(entryHubToPath[data.id]);
+    } else {
+      selectHub(data.id);
+    }
+    return;
+  }
   if (window.SphereAnalytics) window.SphereAnalytics.track('article_clicked', { article_id: data.id, article_label: data.label, hub_id: hit.userData.hubId });
   showMiniTip(data, clientX, clientY);
 }
